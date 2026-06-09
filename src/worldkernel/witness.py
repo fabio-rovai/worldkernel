@@ -29,7 +29,12 @@ import numpy as np
 
 from .kernel import CouplingKernel
 
-__all__ = ["TwoWorldKernel", "witness_pair", "frechet_pn_bounds"]
+__all__ = [
+    "TwoWorldKernel",
+    "witness_pair",
+    "frechet_pn_bounds",
+    "frechet_harmed_bounds",
+]
 
 
 class TwoWorldKernel(CouplingKernel):
@@ -83,6 +88,17 @@ class TwoWorldKernel(CouplingKernel):
         """Probability of necessity and sufficiency P(Y_0=0, Y_1=1)."""
         return self.r1 - self.p11
 
+    def helped(self) -> float:
+        """Fraction of units the treatment flips 0 -> 1: P(Y_0=0, Y_1=1)."""
+        return self.r1 - self.p11
+
+    def harmed(self) -> float:
+        """Fraction of units the treatment flips 1 -> 0: P(Y_0=1, Y_1=0).
+
+        Reads the off-diagonal: two worlds with the same ACE can have
+        harmed = 0 (monotonic) or harmed > 0 (heterogeneous response)."""
+        return self.r0 - self.p11
+
 
 def witness_pair(
     r0: float = 0.5, r1: float = 0.7
@@ -104,3 +120,11 @@ def frechet_pn_bounds(r0: float, r1: float) -> tuple[float, float]:
     diagonal pins down. The off-diagonal selects the point inside it."""
     lo_p11, hi_p11 = max(0.0, r0 + r1 - 1.0), min(r0, r1)
     return (r1 - hi_p11) / r1, (r1 - lo_p11) / r1
+
+
+def frechet_harmed_bounds(r0: float, r1: float) -> tuple[float, float]:
+    """The identified interval for the fraction harmed P(Y_0=1, Y_1=0) from
+    rung-1/2 data alone. The lower bound is max(0, r0 - r1): a positive ACE
+    forces nothing about harm, which is exactly the off-diagonal point."""
+    lo_p11, hi_p11 = max(0.0, r0 + r1 - 1.0), min(r0, r1)
+    return r0 - hi_p11, r0 - lo_p11

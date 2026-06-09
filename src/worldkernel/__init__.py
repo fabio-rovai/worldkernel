@@ -9,7 +9,12 @@ This package makes the kernel a first-class, computable object.
 from .barrier import d_critical, order_parameter
 from .kernel import CouplingKernel, exact_interval, frechet_interval, psd_interval
 from .mediation import atom_count, nde_interval, random_reference, rung12_summary
-from .witness import TwoWorldKernel, frechet_pn_bounds, witness_pair
+from .witness import (
+    TwoWorldKernel,
+    frechet_harmed_bounds,
+    frechet_pn_bounds,
+    witness_pair,
+)
 
 __version__ = "0.1.0"
 
@@ -18,6 +23,7 @@ __all__ = [
     "TwoWorldKernel",
     "witness_pair",
     "frechet_pn_bounds",
+    "frechet_harmed_bounds",
     "frechet_interval",
     "psd_interval",
     "exact_interval",

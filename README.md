@@ -12,7 +12,7 @@ This repository builds, in public, the reference implementation of the framework
 
 Today's "world models" are predictors: they learn the law of what happens. The claim here is that a world model is a strictly larger object, a positive semidefinite **coupling kernel K(T, T')** over admissible possible worlds. The **diagonal** K(T, T) is everything prediction can ever recover: the observational and interventional marginals of each world (rungs 1 and 2 of Pearl's ladder). The **off-diagonal** K(T, T') is the cross-world coupling between potential outcomes: the quantity every genuine counterfactual reads, and the quantity that no amount of rung-1/2 data, and no predictor however large, identifies. A system that holds only the diagonal must collapse worlds that differ counterfactually. A system that holds the kernel separates them exactly. That gap is not philosophy; it is measurable, and this repo measures it.
 
-## Three verified results (all reproducible here)
+## Four verified results (all reproducible here)
 
 **1. The off-diagonal witness.** Two structural causal models with identical observational tables and identical interventional tables (ACE = 0.20), but probability of necessity 0.286 vs 0.500. An LLM (`claude -p`) given the rung-1/2 data returns one number and collapses the worlds; handed the off-diagonal, it separates them. The coupling is the load-bearing sufficient statistic.
 
@@ -25,6 +25,10 @@ Today's "world models" are predictors: they learn the law of what happens. The c
 **3. The barrier.** The kernel's PSD structure is real partial-identifying information: a polynomial-time SDP outer bound on cross-world queries, strictly tighter than Fréchet bounds, computable at k = 40 arms where the exact response-type LP has 2^40 variables. And computability has a sharp edge: the aggregate counterfactual under mutual-exclusion constraints tracks the Sly-Sun hard-core threshold at critical degree d_c = 5.141.
 
 ![Barrier sweep](figs/eta_barrier_sweep.png)
+
+**4. Real public trials.** The framework on real data: the Lalonde NSW job-training RCT (n=445), the International Stroke Trial (n=19,435) and Tennessee STAR (3 arms, n=5,789). Each trial identifies the kernel's diagonal; the kernel then computes exactly what rung 3 remains. The IST headline: at 19,435 patients the bootstrap sampling spread on the probability-of-necessity endpoints is 0.013, while the identified interval stays 0.099 wide, a **7.6x gap that no additional data closes**, only an off-diagonal assumption (monotonicity: aspirin never kills a patient who would have survived) does. On STAR's three arms, joint feasibility of one law over all arms tightens the Fréchet lower bound on the cross-world coherence from 0.113 to 0.541: the kernel extracting real information pairwise boxes cannot see.
+
+![Public trials](figs/public_trials.png)
 
 ## Quickstart
 
@@ -71,7 +75,7 @@ python experiments/barrier_sweep.py
 ## What is in the package
 
 | Module | Object | Role |
-|---|---|---|
+| --- | --- | --- |
 | `worldkernel.kernel` | `CouplingKernel`, `frechet_interval`, `psd_interval`, `exact_interval` | The kernel as a PSD second-moment matrix and the three nested bounds on cross-world queries |
 | `worldkernel.witness` | `TwoWorldKernel`, `witness_pair` | The minimal two-world witness: PN, PS, PNS, and the canonical verified pair |
 | `worldkernel.mediation` | `nde_interval`, `rung12_constraints` | The response-type polytope LP for nested cross-world counterfactuals |
