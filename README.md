@@ -72,6 +72,14 @@ The Sly-Sun theorem forbids exactly one thing: a general efficient algorithm for
 
 ![Ontology width](figs/ontology_width.png)
 
+**Three further escape hatches (v0.2.x), each test-locked:**
+
+- **Backdoor collapse** (`worldkernel.backdoor`): the hardness parameter is not degree; it is b(G), the smallest set whose deletion brings the world below the threshold. Conditioning on a backdoor B splits Z and every adaptive restricted marginal into at most 2^|B| residuals, each tractable: fixed-parameter tractable kernel access, computing the *original* quantities, at any global degree. The search for B may be heuristic (minimum deletion is itself hard, as it must be: worst-case Sly-Sun instances need b(G) = Ω(n)); the certificate Δ(G−B) ≤ 5 is checked in linear time. Demonstrated on hub worlds: global degree 9, backdoor of 2, exact Z and marginals matching enumeration to machine precision. Scars, in the paper's language, are deletion-to-uniqueness certificates.
+- **Phase quotient** (`worldkernel.phases`): above the threshold the obstruction is phase coexistence, and any bounded query is *affine in the phase weights*. With within-phase values computed (each phase has correlation decay) the only unknown is a low-dimensional weight vector: evidence and ontology constraints carve a convex set, an LP gives a certified interval, a point when the weights are identified. Full kernel reconstruction stays NP-hard; the query-induced quotient is polynomial whenever the phase rank is. Certified rank-2 instance shipped: K(200,200), degree 200, 2·2^200 worlds, exact marginal in microseconds; partial phase evidence yields honest intervals. In the glass regime (exponential phase rank) the correct output is the interval with the unidentified object named: the cross-phase weights.
+- **Proof-carrying kernels** (`worldkernel.proofs`): hard to compute is not hard to verify. The hard-core normalizer is a hypercube sum of a low-degree polynomial, exactly the sum-check protocol's home turf: a prover of unlimited effort claims Z; the polynomial-time verifier accepts true claims and rejects false ones with soundness error ~n·Δ/2^61. Implemented and tested: honest proofs accepted, false claims and consistent liars rejected. The kernel entry becomes value + certificate, so an agent can refuse to compute above the barrier and still safely consume supplied off-diagonal values.
+
+Together: *below threshold compute, small backdoor condition, low phase rank quotient, otherwise verify proofs or return the certified interval.* The barrier is not beaten; it is factored.
+
 ## Use it from any agent: the MCP server
 
 The architecture, made operational: the kernel is the world model, the LLM is a sensor. With the `mcp` extra installed, `worldkernel-mcp` exposes the kernel over the Model Context Protocol, so Claude Code or any MCP client can call it as tools:

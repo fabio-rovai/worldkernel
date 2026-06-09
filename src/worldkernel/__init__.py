@@ -6,6 +6,13 @@ coupling: the quantity every rung-3 query reads and no rung-1/2 data identify.
 This package makes the kernel a first-class, computable object.
 """
 
+from .backdoor import (
+    backdoor_marginal,
+    backdoor_z,
+    find_backdoor,
+    hub_world,
+    verify_backdoor,
+)
 from .barrier import d_critical, order_parameter
 from .decide import Decision, decide
 from .dynamics import (
@@ -20,6 +27,8 @@ from .estimate import (
 )
 from .kernel import CouplingKernel, exact_interval, frechet_interval, psd_interval
 from .model import Verdict, WorldModel
+from .phases import PhaseQuotient, kmm_exact_marginal, kmm_quotient
+from .proofs import SumcheckProver, verify_z
 from .propose import evaluate as evaluate_assumption
 from .tractable import ring_of_cliques, transfer_marginals, weitz_interval
 from .mediation import atom_count, nde_interval, random_reference, rung12_summary
@@ -61,5 +70,15 @@ __all__ = [
     "counterfactual_success_interval",
     "independence_point",
     "CorridorWorld",
+    "find_backdoor",
+    "verify_backdoor",
+    "backdoor_z",
+    "backdoor_marginal",
+    "hub_world",
+    "PhaseQuotient",
+    "kmm_quotient",
+    "kmm_exact_marginal",
+    "SumcheckProver",
+    "verify_z",
     "__version__",
 ]
