@@ -1,0 +1,123 @@
+{
+  "label": "ood_harder_substrate_fixed_prior",
+  "env": "swm/TwoRoom-v1",
+  "model": "Pyo3SubstrateCostModel (Rust v2, fixed default prior door_y=112)",
+  "substrate_prior": {
+    "door_positions": [
+      112.0
+    ],
+    "door_half_extents": [
+      14.0
+    ]
+  },
+  "config": {
+    "num_eval": 50,
+    "seed": 42,
+    "cem": {
+      "num_samples": 300,
+      "n_steps": 30,
+      "topk": 30
+    },
+    "plan": {
+      "horizon": 5,
+      "receding_horizon": 5,
+      "action_block": 5
+    }
+  },
+  "regimes": [
+    {
+      "label": "door_default_49",
+      "description": "env door y=49 (env default), substrate prior y=112 (63px mismatch)",
+      "env_init_value": {
+        "door.position": [
+          49,
+          49,
+          49
+        ],
+        "door.number": 1
+      },
+      "success_rate_pct": 100.0,
+      "episodes_solved": 50,
+      "episodes_total": 50,
+      "wall_clock_s": 5.644245862960815,
+      "wall_clock_per_episode_ms": 112.88491725921631
+    },
+    {
+      "label": "door_at_180",
+      "description": "env door y=180, substrate prior y=112 (68px mismatch)",
+      "env_init_value": {
+        "door.position": [
+          180,
+          49,
+          49
+        ],
+        "door.number": 1
+      },
+      "success_rate_pct": 100.0,
+      "episodes_solved": 50,
+      "episodes_total": 50,
+      "wall_clock_s": 5.951741933822632,
+      "wall_clock_per_episode_ms": 119.03483867645264
+    },
+    {
+      "label": "door_at_30",
+      "description": "env door y=30, substrate prior y=112 (82px mismatch)",
+      "env_init_value": {
+        "door.position": [
+          30,
+          49,
+          49
+        ],
+        "door.number": 1
+      },
+      "success_rate_pct": 100.0,
+      "episodes_solved": 50,
+      "episodes_total": 50,
+      "wall_clock_s": 6.64802098274231,
+      "wall_clock_per_episode_ms": 132.9604196548462
+    },
+    {
+      "label": "door_at_200",
+      "description": "env door y=200, substrate prior y=112 (88px mismatch)",
+      "env_init_value": {
+        "door.position": [
+          200,
+          49,
+          49
+        ],
+        "door.number": 1
+      },
+      "success_rate_pct": 100.0,
+      "episodes_solved": 50,
+      "episodes_total": 50,
+      "wall_clock_s": 5.304158926010132,
+      "wall_clock_per_episode_ms": 106.08317852020264
+    },
+    {
+      "label": "door_at_200_narrow",
+      "description": "env door y=200, size=6px, substrate prior y=112 \u2014 hardest: far + narrow",
+      "error": "AssertionError('Value [ 6 14 14] for key door.size is not contained in the space')"
+    },
+    {
+      "label": "door_at_180_slow",
+      "description": "env door y=180 + agent slow (speed=3): compound mismatch",
+      "env_init_value": {
+        "door.position": [
+          180,
+          49,
+          49
+        ],
+        "door.number": 1,
+        "agent.speed": [
+          3.0
+        ]
+      },
+      "success_rate_pct": 100.0,
+      "episodes_solved": 50,
+      "episodes_total": 50,
+      "wall_clock_s": 11.160797119140625,
+      "wall_clock_per_episode_ms": 223.2159423828125
+    }
+  ],
+  "timestamp": "2026-05-29T23:16:32.103080Z"
+}

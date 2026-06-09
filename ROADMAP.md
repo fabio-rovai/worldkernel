@@ -17,6 +17,8 @@ Built in public: every milestone is tracked as a GitHub issue, every claim lands
 - [x] The barrier, constructively (pulled forward from v0.5 scope): Weitz certified marginal intervals (`weitz_interval`), and exact transfer-matrix computation on bounded-width, above-critical-degree worlds (`ring_of_cliques`, `transfer_marginals`)
 - [x] Ontology-to-width bridge (from v0.5 scope): `min_fill_order` width certificates, general variable-elimination exact marginals (`treewidth_marginal`), `disjointness_graph` taxonomy worlds; width tracks branching, not size (1,110 classes, degree 13, exact in 1.3 s)
 - [x] The MCP server (from v0.4 scope): `worldkernel-mcp` exposes 8 kernel tools (counterfactual bounds, NDE from measured records, certified and exact marginals, barrier diagnostics) to any MCP client; `nde_interval_from_record` agent-facing entry point
+- [x] External platform test: the off-diagonal witness embedded in stable-worldmodel's TwoRoom via its own Gym API (`experiments/swm_witness.py`); rung-3 truth 1.000 vs 0.298 on identical training data
+- [x] Trick Room inherited (`trickroom/`): ontology-compiled substrate beats pretrained latent world model 82% vs 48% on Two-Room in the platform's own CEM-MPC harness; full results, scripts, audit trail preserved from the archived fork
 
 ## v0.2: estimation (the kernel meets data)
 

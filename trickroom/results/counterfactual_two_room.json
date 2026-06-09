@@ -1,0 +1,91 @@
+{
+  "label": "counterfactual_substrate",
+  "env": "swm/TwoRoom-v1",
+  "env_default_door": [
+    112.0
+  ],
+  "model": "Pyo3SubstrateCostModel (Rust v2, causal prior varied)",
+  "config": {
+    "num_eval": 50,
+    "seed": 42,
+    "cem": {
+      "num_samples": 300,
+      "n_steps": 30,
+      "topk": 30
+    },
+    "plan": {
+      "horizon": 5,
+      "receding_horizon": 5,
+      "action_block": 5
+    }
+  },
+  "conditions": [
+    {
+      "label": "correct_prior",
+      "description": "door belief matches env (y=112)",
+      "substrate_door_positions": [
+        112.0
+      ],
+      "substrate_num_doors": 1,
+      "env_door_positions": [
+        112.0
+      ],
+      "env_num_doors": 1,
+      "success_rate_pct": 100.0,
+      "episodes_solved": 50,
+      "episodes_total": 50,
+      "wall_clock_s": 18.375818014144897,
+      "wall_clock_per_episode_ms": 367.51636028289795
+    },
+    {
+      "label": "wrong_close",
+      "description": "door belief off by 32 px (y=80)",
+      "substrate_door_positions": [
+        80.0
+      ],
+      "substrate_num_doors": 1,
+      "env_door_positions": [
+        112.0
+      ],
+      "env_num_doors": 1,
+      "success_rate_pct": 100.0,
+      "episodes_solved": 50,
+      "episodes_total": 50,
+      "wall_clock_s": 17.656977891921997,
+      "wall_clock_per_episode_ms": 353.13955783843994
+    },
+    {
+      "label": "wrong_far",
+      "description": "door belief off by 88 px (y=200)",
+      "substrate_door_positions": [
+        200.0
+      ],
+      "substrate_num_doors": 1,
+      "env_door_positions": [
+        112.0
+      ],
+      "env_num_doors": 1,
+      "success_rate_pct": 100.0,
+      "episodes_solved": 50,
+      "episodes_total": 50,
+      "wall_clock_s": 17.263242959976196,
+      "wall_clock_per_episode_ms": 345.2648591995239
+    },
+    {
+      "label": "sealed_wall",
+      "description": "substrate believes wall is sealed (num_doors=0)",
+      "substrate_door_positions": [],
+      "substrate_num_doors": 0,
+      "env_door_positions": [
+        112.0
+      ],
+      "env_num_doors": 1,
+      "success_rate_pct": 100.0,
+      "episodes_solved": 50,
+      "episodes_total": 50,
+      "wall_clock_s": 17.726431846618652,
+      "wall_clock_per_episode_ms": 354.52863693237305
+    }
+  ],
+  "timestamp": "2026-05-29T16:23:42.166086Z"
+}

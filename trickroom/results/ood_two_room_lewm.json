@@ -1,0 +1,130 @@
+{
+  "label": "lewm_ood",
+  "env": "swm/TwoRoom-v1",
+  "checkpoint": "quentinll/lewm-tworooms",
+  "device": "mps",
+  "config": {
+    "num_eval": 50,
+    "seed": 42,
+    "cem": {
+      "num_samples": 300,
+      "n_steps": 30,
+      "topk": 30
+    },
+    "plan": {
+      "horizon": 5,
+      "receding_horizon": 5,
+      "action_block": 5
+    }
+  },
+  "training_trajectories": 1000,
+  "regimes": [
+    {
+      "label": "default",
+      "env_init_value": {},
+      "success_rate_pct": 66.0,
+      "episodes_solved": 33,
+      "episodes_total": 50,
+      "wall_clock_s": 1032.3404610157013,
+      "wall_clock_per_episode_ms": 20646.809220314026
+    },
+    {
+      "label": "wall_horizontal",
+      "env_init_value": {
+        "wall.axis": 0
+      },
+      "success_rate_pct": 32.0,
+      "episodes_solved": 16,
+      "episodes_total": 50,
+      "wall_clock_s": 1050.7362003326416,
+      "wall_clock_per_episode_ms": 21014.724006652832
+    },
+    {
+      "label": "wall_thick_20",
+      "env_init_value": {
+        "wall.thickness": 20
+      },
+      "success_rate_pct": 38.0,
+      "episodes_solved": 19,
+      "episodes_total": 50,
+      "wall_clock_s": 1285.7340700626373,
+      "wall_clock_per_episode_ms": 25714.681401252747
+    },
+    {
+      "label": "agent_fast_8",
+      "env_init_value": {
+        "agent.speed": [
+          8.0
+        ]
+      },
+      "success_rate_pct": 74.0,
+      "episodes_solved": 37,
+      "episodes_total": 50,
+      "wall_clock_s": 1206.9241020679474,
+      "wall_clock_per_episode_ms": 24138.482041358948
+    },
+    {
+      "label": "agent_slow_3",
+      "env_init_value": {
+        "agent.speed": [
+          3.0
+        ]
+      },
+      "success_rate_pct": 48.0,
+      "episodes_solved": 24,
+      "episodes_total": 50,
+      "wall_clock_s": 1359.2231984138489,
+      "wall_clock_per_episode_ms": 27184.463968276978
+    },
+    {
+      "label": "agent_big_10",
+      "env_init_value": {
+        "agent.radius": [
+          10.0
+        ]
+      },
+      "success_rate_pct": 64.0,
+      "episodes_solved": 32,
+      "episodes_total": 50,
+      "wall_clock_s": 1481.1304850578308,
+      "wall_clock_per_episode_ms": 29622.609701156616
+    },
+    {
+      "label": "door_big_20",
+      "env_init_value": {
+        "door.size": [
+          20,
+          14,
+          14
+        ]
+      },
+      "success_rate_pct": 64.0,
+      "episodes_solved": 32,
+      "episodes_total": 50,
+      "wall_clock_s": 1392.145252943039,
+      "wall_clock_per_episode_ms": 27842.90505886078
+    },
+    {
+      "label": "three_doors",
+      "env_init_value": {
+        "door.number": 3,
+        "door.position": [
+          50,
+          112,
+          175
+        ],
+        "door.size": [
+          14,
+          14,
+          14
+        ]
+      },
+      "success_rate_pct": 60.0,
+      "episodes_solved": 30,
+      "episodes_total": 50,
+      "wall_clock_s": 1292.2419729232788,
+      "wall_clock_per_episode_ms": 25844.839458465576
+    }
+  ],
+  "timestamp": "2026-05-29T18:48:21.664383Z"
+}

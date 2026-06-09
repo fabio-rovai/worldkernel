@@ -1,0 +1,32 @@
+{
+  "euclid": {
+    "cost_mode": "euclid",
+    "n": 40,
+    "success": 55.00000000000001,
+    "violations": 0,
+    "ratio_median": 1.0113388080057992,
+    "ratio_mean": 1.0349066751552192,
+    "ratio_p90": 1.150963521426796,
+    "n_reached": 22
+  },
+  "geodesic_value": {
+    "cost_mode": "geodesic",
+    "n": 40,
+    "success": 37.5,
+    "violations": 0,
+    "ratio_median": 2.269170184490947,
+    "ratio_mean": 5.269612460336806,
+    "ratio_p90": 14.049334280633147,
+    "n_reached": 15
+  },
+  "gradflow": {
+    "cost_mode": "gradflow",
+    "n": 40,
+    "success": 100.0,
+    "violations": 0,
+    "ratio_median": 0.932308728196146,
+    "ratio_mean": 0.9335092683015496,
+    "ratio_p90": 0.9652941918597988,
+    "n_reached": 40
+  }
+}

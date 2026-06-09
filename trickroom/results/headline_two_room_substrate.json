@@ -1,0 +1,25 @@
+{
+  "label": "v0_python_substrate",
+  "env": "swm/TwoRoom-v1",
+  "config": {
+    "num_eval": 50,
+    "seed": 42,
+    "cem": {
+      "num_samples": 300,
+      "n_steps": 30,
+      "topk": 30
+    },
+    "plan": {
+      "horizon": 5,
+      "receding_horizon": 5,
+      "action_block": 5
+    }
+  },
+  "success_rate_pct": 100.0,
+  "episodes_solved": 50,
+  "episodes_total": 50,
+  "wall_clock_total_s": 4.555957078933716,
+  "wall_clock_per_episode_ms": 91.11914157867432,
+  "training_trajectories": 0,
+  "timestamp": "2026-05-29T14:18:20.959853Z"
+}

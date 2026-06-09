@@ -1,0 +1,13 @@
+{
+  "regimes": {
+    "default": 82.0,
+    "wall_horizontal": 60.0,
+    "wall_thick_20": 78.0,
+    "agent_fast_8": 82.0,
+    "agent_slow_3": 80.0,
+    "door_big_20": 82.0,
+    "three_doors": 90.0
+  },
+  "mode": "wait",
+  "access": "privileged"
+}

@@ -1,0 +1,33 @@
+{
+  "label": "lewm_ood",
+  "env": "swm/TwoRoom-v1",
+  "checkpoint": "quentinll/lewm-tworooms",
+  "device": "mps",
+  "config": {
+    "num_eval": 2,
+    "seed": 42,
+    "cem": {
+      "num_samples": 300,
+      "n_steps": 30,
+      "topk": 30
+    },
+    "plan": {
+      "horizon": 5,
+      "receding_horizon": 5,
+      "action_block": 5
+    }
+  },
+  "training_trajectories": 1000,
+  "regimes": [
+    {
+      "label": "default",
+      "env_init_value": {},
+      "success_rate_pct": 100.0,
+      "episodes_solved": 2,
+      "episodes_total": 2,
+      "wall_clock_s": 69.0992739200592,
+      "wall_clock_per_episode_ms": 34549.6369600296
+    }
+  ],
+  "timestamp": "2026-05-29T15:59:08.747327Z"
+}

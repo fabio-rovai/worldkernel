@@ -1,0 +1,26 @@
+{
+  "label": "v2_pyo3_substrate",
+  "env": "swm/TwoRoom-v1",
+  "bridge": "pyo3_native_cdylib",
+  "config": {
+    "num_eval": 50,
+    "seed": 42,
+    "cem": {
+      "num_samples": 300,
+      "n_steps": 30,
+      "topk": 30
+    },
+    "plan": {
+      "horizon": 5,
+      "receding_horizon": 5,
+      "action_block": 5
+    }
+  },
+  "success_rate_pct": 100.0,
+  "episodes_solved": 50,
+  "episodes_total": 50,
+  "wall_clock_total_s": 19.598401069641113,
+  "wall_clock_per_episode_ms": 391.96802139282227,
+  "training_trajectories": 0,
+  "timestamp": "2026-05-29T16:15:30.687264Z"
+}

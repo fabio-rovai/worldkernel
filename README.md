@@ -12,7 +12,7 @@ This repository builds, in public, the reference implementation of the framework
 
 Today's "world models" are predictors: they learn the law of what happens. The claim here is that a world model is a strictly larger object, a positive semidefinite **coupling kernel K(T, T')** over admissible possible worlds. The **diagonal** K(T, T) is everything prediction can ever recover: the observational and interventional marginals of each world (rungs 1 and 2 of Pearl's ladder). The **off-diagonal** K(T, T') is the cross-world coupling between potential outcomes: the quantity every genuine counterfactual reads, and the quantity that no amount of rung-1/2 data, and no predictor however large, identifies. A system that holds only the diagonal must collapse worlds that differ counterfactually. A system that holds the kernel separates them exactly. That gap is not philosophy; it is measurable, and this repo measures it.
 
-## Four verified results (all reproducible here)
+## Five verified results (all reproducible here)
 
 **1. The off-diagonal witness.** Two structural causal models with identical observational tables and identical interventional tables (ACE = 0.20), but probability of necessity 0.286 vs 0.500. An LLM (`claude -p`) given the rung-1/2 data returns one number and collapses the worlds; handed the off-diagonal, it separates them. The coupling is the load-bearing sufficient statistic.
 
@@ -29,6 +29,12 @@ Today's "world models" are predictors: they learn the law of what happens. The c
 **4. Real public trials.** The framework on real data: the Lalonde NSW job-training RCT (n=445), the International Stroke Trial (n=19,435) and Tennessee STAR (3 arms, n=5,789). Each trial identifies the kernel's diagonal; the kernel then computes exactly what rung 3 remains. The IST headline: at 19,435 patients the bootstrap sampling spread on the probability-of-necessity endpoints is 0.013, while the identified interval stays 0.099 wide, a **7.6x gap that no additional data closes**, only an off-diagonal assumption (monotonicity: aspirin never kills a patient who would have survived) does. On STAR's three arms, joint feasibility of one law over all arms tightens the Fréchet lower bound on the cross-world coherence from 0.113 to 0.541: the kernel extracting real information pairwise boxes cannot see.
 
 ![Public trials](figs/public_trials.png)
+
+**5. The witness inside a real world-model platform.** `experiments/swm_witness.py` embeds the off-diagonal witness in [stable-worldmodel](https://github.com/galilai-group/stable-worldmodel)'s TwoRoom environment through its own Gym API: two slip-noise worlds with identical per-action slip marginals (audited on 9,600+ steps per world: max rate gap 0.016 inside the 0.019 sampling band, and exactly equal by construction since the env is otherwise deterministic) but opposite cross-action coupling. The planner-relevant rung-3 query, "this step slipped; would the other action have slipped too?", has measured ground truth **1.000 in one world and 0.298 in the other**. Any world model trained on the platform sees the same data in both and answers with one number; the kernel reports the identified interval and, handed the coupling, scores exact in both worlds.
+
+## Trick Room: the thesis as a working planner
+
+[trickroom/](trickroom/) preserves the Trick Room project (inherited from a now-archived private fork of stable-worldmodel): an ontology-specified symbolic substrate (`tbox/tworoom.ttl`, compiled to dynamics, zero training trajectories) plugged into the platform's own CEM-MPC harness, beating a pretrained latent world model **82% vs 48%** on Two-Room planning under audited sequential evaluation, with smaller and more predictable OOD degradation. It is the constructive complement to the witness above: prediction misses the off-diagonal, and what replaces it is writing the world down and compiling it, exactly the ontology-to-width route. Full results, benchmark scripts, engines and the honest evaluation-artefact audit are inside.
 
 ## Resolving the hardness barrier, constructively
 

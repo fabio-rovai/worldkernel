@@ -1,0 +1,37 @@
+defaults:
+  - launcher: local
+  - solver: cem
+  - _self_
+
+# Trick Room v0 variant of tworoom.yaml: same CEM/world config, swap policy
+# to SubstrateCostModel. Run via scripts/benchmark/trick_room_two_room.py
+# (eval_wm.py path requires stable-pretraining checkpoint plumbing we skip
+# for v0 — substrate has no checkpoint).
+
+world:
+  env_name: swm/TwoRoom-v1
+  num_envs: ${eval.num_eval}
+  max_episode_steps: ???
+seed: 42
+policy: substrate
+
+plan_config:
+  horizon: 5
+  receding_horizon: 5
+  action_block: 5
+
+solver:
+  num_samples: 300
+  n_steps: 30
+  topk: 30
+
+eval:
+  num_eval: 50
+  eval_budget: 50
+  img_size: 224
+  # No dataset-driven start states for v0: random env resets per seed.
+  # Upstream tworoom.yaml uses tworoom.h5 (1000 expert episodes) for replay
+  # starts; we'll wire that in alongside baselines once they're trained.
+
+output:
+  filename: tworoom_substrate_results.txt

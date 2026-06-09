@@ -1,0 +1,275 @@
+{
+  "env": "swm/TwoRoom-v1",
+  "config": {
+    "num_eval": 50,
+    "seed": 42,
+    "cem": {
+      "num_samples": 300,
+      "n_steps": 30,
+      "topk": 30
+    },
+    "plan": {
+      "horizon": 5,
+      "receding_horizon": 5,
+      "action_block": 5
+    }
+  },
+  "modes": {
+    "privileged_access": [
+      {
+        "label": "default",
+        "env_init_value": {},
+        "substrate_kwargs": {},
+        "success_rate_pct": 100.0,
+        "episodes_solved": 50,
+        "episodes_total": 50,
+        "wall_clock_s": 4.5361669063568115,
+        "wall_clock_per_episode_ms": 90.72333812713623
+      },
+      {
+        "label": "wall_horizontal",
+        "env_init_value": {
+          "wall.axis": 0
+        },
+        "substrate_kwargs": {
+          "wall_axis": 0
+        },
+        "success_rate_pct": 100.0,
+        "episodes_solved": 50,
+        "episodes_total": 50,
+        "wall_clock_s": 4.784860134124756,
+        "wall_clock_per_episode_ms": 95.69720268249512
+      },
+      {
+        "label": "wall_thick_20",
+        "env_init_value": {
+          "wall.thickness": 20
+        },
+        "substrate_kwargs": {
+          "wall_thickness": 20
+        },
+        "success_rate_pct": 100.0,
+        "episodes_solved": 50,
+        "episodes_total": 50,
+        "wall_clock_s": 4.71244215965271,
+        "wall_clock_per_episode_ms": 94.2488431930542
+      },
+      {
+        "label": "agent_fast_8",
+        "env_init_value": {
+          "agent.speed": [
+            8.0
+          ]
+        },
+        "substrate_kwargs": {
+          "agent_speed": 8.0
+        },
+        "success_rate_pct": 100.0,
+        "episodes_solved": 50,
+        "episodes_total": 50,
+        "wall_clock_s": 4.197937250137329,
+        "wall_clock_per_episode_ms": 83.95874500274658
+      },
+      {
+        "label": "agent_slow_3",
+        "env_init_value": {
+          "agent.speed": [
+            3.0
+          ]
+        },
+        "substrate_kwargs": {
+          "agent_speed": 3.0
+        },
+        "success_rate_pct": 100.0,
+        "episodes_solved": 50,
+        "episodes_total": 50,
+        "wall_clock_s": 5.385354995727539,
+        "wall_clock_per_episode_ms": 107.70709991455078
+      },
+      {
+        "label": "agent_big_10",
+        "env_init_value": {
+          "agent.radius": [
+            10.0
+          ]
+        },
+        "substrate_kwargs": {
+          "agent_radius": 10.0
+        },
+        "success_rate_pct": 100.0,
+        "episodes_solved": 50,
+        "episodes_total": 50,
+        "wall_clock_s": 4.38769006729126,
+        "wall_clock_per_episode_ms": 87.7538013458252
+      },
+      {
+        "label": "door_big_20",
+        "env_init_value": {
+          "door.size": [
+            20,
+            14,
+            14
+          ]
+        },
+        "substrate_kwargs": {
+          "door_half_extents": [
+            20,
+            14,
+            14
+          ]
+        },
+        "success_rate_pct": 100.0,
+        "episodes_solved": 50,
+        "episodes_total": 50,
+        "wall_clock_s": 4.542677640914917,
+        "wall_clock_per_episode_ms": 90.85355281829834
+      },
+      {
+        "label": "three_doors",
+        "env_init_value": {
+          "door.number": 3,
+          "door.position": [
+            50,
+            112,
+            175
+          ],
+          "door.size": [
+            14,
+            14,
+            14
+          ]
+        },
+        "substrate_kwargs": {
+          "num_doors": 3,
+          "door_half_extents": [
+            14,
+            14,
+            14
+          ]
+        },
+        "success_rate_pct": 100.0,
+        "episodes_solved": 50,
+        "episodes_total": 50,
+        "wall_clock_s": 4.327707767486572,
+        "wall_clock_per_episode_ms": 86.55415534973145
+      }
+    ],
+    "fixed_prior": [
+      {
+        "label": "default",
+        "env_init_value": {},
+        "substrate_kwargs": {},
+        "success_rate_pct": 100.0,
+        "episodes_solved": 50,
+        "episodes_total": 50,
+        "wall_clock_s": 4.847411394119263,
+        "wall_clock_per_episode_ms": 96.94822788238525
+      },
+      {
+        "label": "wall_horizontal",
+        "env_init_value": {
+          "wall.axis": 0
+        },
+        "substrate_kwargs": {},
+        "success_rate_pct": 100.0,
+        "episodes_solved": 50,
+        "episodes_total": 50,
+        "wall_clock_s": 9.561499118804932,
+        "wall_clock_per_episode_ms": 191.22998237609863
+      },
+      {
+        "label": "wall_thick_20",
+        "env_init_value": {
+          "wall.thickness": 20
+        },
+        "substrate_kwargs": {},
+        "success_rate_pct": 100.0,
+        "episodes_solved": 50,
+        "episodes_total": 50,
+        "wall_clock_s": 4.815094947814941,
+        "wall_clock_per_episode_ms": 96.30189895629883
+      },
+      {
+        "label": "agent_fast_8",
+        "env_init_value": {
+          "agent.speed": [
+            8.0
+          ]
+        },
+        "substrate_kwargs": {},
+        "success_rate_pct": 100.0,
+        "episodes_solved": 50,
+        "episodes_total": 50,
+        "wall_clock_s": 3.4772531986236572,
+        "wall_clock_per_episode_ms": 69.54506397247314
+      },
+      {
+        "label": "agent_slow_3",
+        "env_init_value": {
+          "agent.speed": [
+            3.0
+          ]
+        },
+        "substrate_kwargs": {},
+        "success_rate_pct": 100.0,
+        "episodes_solved": 50,
+        "episodes_total": 50,
+        "wall_clock_s": 7.813356876373291,
+        "wall_clock_per_episode_ms": 156.26713752746582
+      },
+      {
+        "label": "agent_big_10",
+        "env_init_value": {
+          "agent.radius": [
+            10.0
+          ]
+        },
+        "substrate_kwargs": {},
+        "success_rate_pct": 100.0,
+        "episodes_solved": 50,
+        "episodes_total": 50,
+        "wall_clock_s": 4.794059991836548,
+        "wall_clock_per_episode_ms": 95.88119983673096
+      },
+      {
+        "label": "door_big_20",
+        "env_init_value": {
+          "door.size": [
+            20,
+            14,
+            14
+          ]
+        },
+        "substrate_kwargs": {},
+        "success_rate_pct": 100.0,
+        "episodes_solved": 50,
+        "episodes_total": 50,
+        "wall_clock_s": 4.622184991836548,
+        "wall_clock_per_episode_ms": 92.44369983673096
+      },
+      {
+        "label": "three_doors",
+        "env_init_value": {
+          "door.number": 3,
+          "door.position": [
+            50,
+            112,
+            175
+          ],
+          "door.size": [
+            14,
+            14,
+            14
+          ]
+        },
+        "substrate_kwargs": {},
+        "success_rate_pct": 100.0,
+        "episodes_solved": 50,
+        "episodes_total": 50,
+        "wall_clock_s": 4.483392953872681,
+        "wall_clock_per_episode_ms": 89.66785907745361
+      }
+    ]
+  },
+  "timestamp": "2026-05-29T14:29:41.005839Z"
+}

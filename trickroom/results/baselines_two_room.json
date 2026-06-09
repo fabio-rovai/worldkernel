@@ -1,0 +1,28 @@
+{
+  "env": "swm/TwoRoom-v1",
+  "config": {
+    "num_eval": 50,
+    "seed": 42
+  },
+  "baselines": [
+    {
+      "label": "random_policy",
+      "success_rate_pct": 4.0,
+      "episodes_solved": 2,
+      "episodes_total": 50,
+      "wall_clock_total_s": 7.15214204788208,
+      "wall_clock_per_episode_ms": 143.0428409576416,
+      "training_trajectories": 0
+    },
+    {
+      "label": "expert_policy_upstream_weak",
+      "success_rate_pct": 100.0,
+      "episodes_solved": 50,
+      "episodes_total": 50,
+      "wall_clock_total_s": 5.815399169921875,
+      "wall_clock_per_episode_ms": 116.3079833984375,
+      "training_trajectories": 0
+    }
+  ],
+  "timestamp": "2026-05-29T14:33:24.552335Z"
+}

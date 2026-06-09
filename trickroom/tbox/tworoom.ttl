@@ -1,0 +1,112 @@
+@prefix : <https://trickroom.fabio-rovai.dev/tworoom#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://trickroom.fabio-rovai.dev/tworoom> a owl:Ontology ;
+    rdfs:label "Two-Room navigation TBox" ;
+    rdfs:comment "Ontological specification of the stable-worldmodel Two-Room environment dynamics. Mirrors stable_worldmodel/envs/two_room/env.py exactly. Specification, not approximation: the substrate IS the env." .
+
+# ── Datatypes ─────────────────────────────────────────────────────────────────
+
+:Vec2 a rdfs:Datatype ;
+    rdfs:comment "Pair of float pixels, [x, y] in image coords (0 at top-left)." .
+
+# ── Classes ───────────────────────────────────────────────────────────────────
+
+:Agent a owl:Class .
+:Target a owl:Class .
+:Wall a owl:Class .
+:Door a owl:Class .
+:Border a owl:Class .
+:World a owl:Class ;
+    rdfs:comment "Singleton holding scene constants (img_size, border_size)." .
+
+# ── Properties ────────────────────────────────────────────────────────────────
+
+:position    a owl:DatatypeProperty ; rdfs:range :Vec2 .
+:radius      a owl:DatatypeProperty ; rdfs:range xsd:float .
+:speed       a owl:DatatypeProperty ; rdfs:range xsd:float ;
+    rdfs:comment "Scalar multiplier applied to the [-1,1] action vector." .
+:axis        a owl:DatatypeProperty ; rdfs:range xsd:integer ;
+    rdfs:comment "0 = horizontal wall, 1 = vertical wall." .
+:thickness   a owl:DatatypeProperty ; rdfs:range xsd:integer .
+:halfExtent  a owl:DatatypeProperty ; rdfs:range xsd:float ;
+    rdfs:comment "Door half-extent along the wall axis." .
+:doorMargin  a owl:DatatypeProperty ; rdfs:range xsd:float ;
+    rdfs:comment "Extra clearance added to halfExtent for door membership test." .
+:imgSize     a owl:DatatypeProperty ; rdfs:range xsd:integer .
+:borderSize  a owl:DatatypeProperty ; rdfs:range xsd:integer .
+:wallCenter  a owl:DatatypeProperty ; rdfs:range xsd:integer .
+:maxDoors    a owl:DatatypeProperty ; rdfs:range xsd:integer .
+
+:hasDoor   a owl:ObjectProperty ; rdfs:domain :Wall   ; rdfs:range :Door .
+:hasWall   a owl:ObjectProperty ; rdfs:domain :World  ; rdfs:range :Wall .
+:hasAgent  a owl:ObjectProperty ; rdfs:domain :World  ; rdfs:range :Agent .
+:hasTarget a owl:ObjectProperty ; rdfs:domain :World  ; rdfs:range :Target .
+
+# ── Rules (IR used by the knowledge compiler) ─────────────────────────────────
+#
+# The compiler reads :RuleStep individuals and emits Python/Rust code.
+# Each rule has: :ruleId (int), :ruleName (string), :ruleExpr (IR string).
+#
+# IR syntax (minimal, compiler-specific):
+#   PROPOSED  x' = clip(x + action * speed, lo, hi)
+#   CLIP_AXIS v  in [lo, hi]
+#   WALL_COLL axis wall_center thickness agent_radius door_halfextent door_margin
+
+:RuleStep a owl:Class ;
+    rdfs:comment "An atomic physics rule executed in the substrate step() function." .
+
+:ruleId   a owl:DatatypeProperty ; rdfs:domain :RuleStep ; rdfs:range xsd:integer .
+:ruleName a owl:DatatypeProperty ; rdfs:domain :RuleStep ; rdfs:range xsd:string .
+:ruleExpr a owl:DatatypeProperty ; rdfs:domain :RuleStep ; rdfs:range xsd:string .
+:ruleDoc  a owl:DatatypeProperty ; rdfs:domain :RuleStep ; rdfs:range xsd:string .
+
+:R1 a :RuleStep ;
+    :ruleId   1 ;
+    :ruleName "MoveProposed" ;
+    :ruleExpr "PROPOSED speed=5.0" ;
+    :ruleDoc  "Proposed new position = agent_pos + clip(action,-1,1) * speed" .
+
+:R2 a :RuleStep ;
+    :ruleId   2 ;
+    :ruleName "CollideBorder" ;
+    :ruleExpr "CLIP_BORDER img_size=224 border_size=14 agent_radius=7.0" ;
+    :ruleDoc  "Clamp position to [border+radius, img-border-radius] on each axis" .
+
+:R3 a :RuleStep ;
+    :ruleId   3 ;
+    :ruleName "CollideWall" ;
+    :ruleExpr "WALL_COLL wall_axis=1 wall_center=112 wall_thickness=10 agent_radius=7.0 door_half_extent=14.0 door_margin=1.75 max_doors=3" ;
+    :ruleDoc  "If crossing wall and not in any door, clamp to wall face on start side" .
+
+# ── Concrete scene individual ─────────────────────────────────────────────────
+#
+# :TwoRoomDefault is the reference configuration used in stable-worldmodel v1.
+# A knowledge compiler instantiates a substrate from this individual.
+
+:TwoRoomDefault a :World ;
+    rdfs:label "Two-Room v1 default configuration" ;
+    :imgSize    224 ;
+    :borderSize 14 ;
+    :wallCenter 112 ;
+    :maxDoors   3 .
+
+:DefaultWall a :Wall ;
+    :axis      1 ;
+    :thickness 10 ;
+    :wallCenter 112 .
+
+:DefaultAgent a :Agent ;
+    :radius 7.0 ;
+    :speed  5.0 .
+
+:DefaultDoor a :Door ;
+    :halfExtent 14.0 ;
+    :doorMargin 1.75 .
+
+:TwoRoomDefault :hasWall   :DefaultWall .
+:TwoRoomDefault :hasAgent  :DefaultAgent .
+:DefaultWall    :hasDoor   :DefaultDoor .

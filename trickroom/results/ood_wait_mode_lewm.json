@@ -1,0 +1,14 @@
+{
+  "regimes": {
+    "default": 46.0,
+    "wall_horizontal": 28.000000000000004,
+    "wall_thick_20": 24.0,
+    "agent_fast_8": 48.0,
+    "agent_slow_3": 38.0,
+    "door_big_20": 44.0,
+    "three_doors": 42.0
+  },
+  "mode": "wait",
+  "seed": 42,
+  "device": "mps"
+}
