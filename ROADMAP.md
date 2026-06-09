@@ -11,6 +11,11 @@ Built in public: every milestone is tracked as a GitHub issue, every claim lands
 - [x] Sly-Sun barrier instruments: order parameter, d_c = 5.141, BP vs exact marginals
 - [x] Tests, CI, reproduction scripts
 
+## v0.1.x increments (done, built in public)
+
+- [x] Real public trials: NSW, IST, STAR through the kernel; sampling vs identification decomposition (IST: 7.6x)
+- [x] The barrier, constructively (pulled forward from v0.5 scope): Weitz certified marginal intervals (`weitz_interval`), and exact transfer-matrix computation on bounded-width, above-critical-degree worlds (`ring_of_cliques`, `transfer_marginals`)
+
 ## v0.2: estimation (the kernel meets data)
 
 - [ ] Finite-sample diagonals: estimate marginals from trial data with confidence intervals, propagate into the bounds

@@ -30,6 +30,16 @@ Today's "world models" are predictors: they learn the law of what happens. The c
 
 ![Public trials](figs/public_trials.png)
 
+## Resolving the hardness barrier, constructively
+
+The Sly-Sun theorem forbids exactly one thing: a general efficient algorithm for the off-diagonal aggregate above the critical degree (that would give NP = RP). The paper treats that as a design constraint, and `worldkernel.tractable` now implements the two routes the theorem leaves open:
+
+**Route 1: certify.** `weitz_interval` runs Weitz's self-avoiding-walk recursion with interval boundary conditions, returning rigorous upper and lower bounds on every off-diagonal marginal, at every depth, on every graph, unconditionally. Below d_c the certificate contracts geometrically and converges to the exact value (verified against enumeration to machine precision); approaching and crossing d_c the contraction rate collapses while cost per depth grows as (d-1)^depth. The barrier stops being a silent failure and becomes a quantity the algorithm reports about its own answer: at comparable compute on n=60 graphs, certified width 0.0006 at d=3 versus 0.42 at d=7.
+
+**Route 2: structure beats degree.** Sly-Sun is a worst-case statement about *degree*; exact computation is governed by *width*. A ring of 40 cliques of size 9 has internal degree 8, far above d_c = 5.141 ((d-1)η = 1.32, squarely in the "hard" regime), yet treewidth 9: `transfer_marginals` computes its hard-core marginals **exactly in 0.02 ms** at n = 360, where enumeration has 2^360 states and belief propagation is measurably wrong (mean error 0.057). Worlds whose constraints come from structured ontologies live in this class by design, which is precisely the kernel's thesis: restriction is the design constraint that keeps the off-diagonal computable.
+
+![Barrier resolution](figs/barrier_resolution.png)
+
 ## Quickstart
 
 ```bash
@@ -80,6 +90,7 @@ python experiments/barrier_sweep.py
 | `worldkernel.witness` | `TwoWorldKernel`, `witness_pair` | The minimal two-world witness: PN, PS, PNS, and the canonical verified pair |
 | `worldkernel.mediation` | `nde_interval`, `rung12_constraints` | The response-type polytope LP for nested cross-world counterfactuals |
 | `worldkernel.barrier` | `order_parameter`, `d_critical`, BP and exact hard-core marginals | Where computing the off-diagonal stops being tractable |
+| `worldkernel.tractable` | `weitz_interval`, `ring_of_cliques`, `transfer_marginals` | The constructive answer: certified intervals everywhere, exact computation on bounded-width structure |
 
 Every paper number above is locked in by the test suite (`pytest`).
 

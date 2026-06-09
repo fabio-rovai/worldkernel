@@ -8,6 +8,7 @@ This package makes the kernel a first-class, computable object.
 
 from .barrier import d_critical, order_parameter
 from .kernel import CouplingKernel, exact_interval, frechet_interval, psd_interval
+from .tractable import ring_of_cliques, transfer_marginals, weitz_interval
 from .mediation import atom_count, nde_interval, random_reference, rung12_summary
 from .witness import (
     TwoWorldKernel,
@@ -33,5 +34,8 @@ __all__ = [
     "atom_count",
     "order_parameter",
     "d_critical",
+    "weitz_interval",
+    "ring_of_cliques",
+    "transfer_marginals",
     "__version__",
 ]
