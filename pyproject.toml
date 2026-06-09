@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "worldkernel"
+version = "0.1.0"
+description = "A world model as the PSD coupling kernel of admissible possible worlds: diagonal = prediction, off-diagonal = counterfactual coupling"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Fabio Rovai", email = "fabio@thetesseractacademy.com" }]
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "scipy>=1.10"]
+keywords = [
+    "world-model",
+    "causality",
+    "counterfactual",
+    "partial-identification",
+    "potential-outcomes",
+    "semidefinite-programming",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.urls]
+Homepage = "https://github.com/fabio-rovai/worldkernel"
+Issues = "https://github.com/fabio-rovai/worldkernel/issues"
+
+[project.optional-dependencies]
+sdp = ["cvxpy>=1.4"]
+plots = ["matplotlib>=3.7"]
+dev = ["pytest>=7.0", "cvxpy>=1.4"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/worldkernel"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
