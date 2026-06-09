@@ -40,6 +40,31 @@ The Sly-Sun theorem forbids exactly one thing: a general efficient algorithm for
 
 ![Barrier resolution](figs/barrier_resolution.png)
 
+**Route 2 generalized: the ontology IS the tractability certificate.** `min_fill_order` certifies any constraint graph's width and `treewidth_marginal` computes exact off-diagonal marginals in O(n·2^width), degree-independent. The bridge to knowledge representation: an ontology's disjointness axioms (sibling AllDisjoint cliques plus local property constraints, `disjointness_graph`) generate worlds whose width is set by the *local branching factor, not the number of classes*. Measured: a 1,110-class taxonomy with max degree 13 ((d-1)η = 1.68, far into the hard-by-degree regime) has width 13 and computes exactly in 1.3 s, and the width stays flat as the ontology grows; a random 8-regular world of the same degree has width growing linearly with n (12 → 83) and is dead by n = 96. Writing the ontology is writing the guarantee that your counterfactuals stay computable.
+
+![Ontology width](figs/ontology_width.png)
+
+## Use it from any agent: the MCP server
+
+The architecture, made operational: the kernel is the world model, the LLM is a sensor. With the `mcp` extra installed, `worldkernel-mcp` exposes the kernel over the Model Context Protocol, so Claude Code or any MCP client can call it as tools:
+
+```json
+{"mcpServers": {"worldkernel": {"command": "worldkernel-mcp"}}}
+```
+
+| Tool | What it computes |
+| --- | --- |
+| `counterfactual_bounds` | Identified PN and fraction-harmed intervals of a two-arm experiment |
+| `coupling_query` | Every rung-3 quantity under an explicitly assumed coupling (admissibility-checked) |
+| `nde_bounds` | Exact identified NDE interval from a measured mediation record, or infeasibility |
+| `coherence_bounds` | Fréchet and exact bounds on cross-world coherence from k-arm marginals |
+| `certified_marginal` | Weitz certified interval for any constraint-graph marginal, any degree |
+| `exact_marginal_by_width` | Exact marginal by variable elimination, with the width certificate |
+| `barrier_diagnostics` | Where a structure sits relative to d_c and what remains computable there |
+| `mediation_scaling` | Response-type atom counts (where the counting barrier lives) |
+
+Every tool returns intervals where intervals are the truth, and the server's instructions tell the agent not to pick a point inside one without stating the assumption that picks it. That is the agent loop of [ROADMAP](ROADMAP.md) v0.4: the LLM reads the world and proposes; the kernel computes, certifies, and refuses to overclaim.
+
 ## Quickstart
 
 ```bash
@@ -90,7 +115,8 @@ python experiments/barrier_sweep.py
 | `worldkernel.witness` | `TwoWorldKernel`, `witness_pair` | The minimal two-world witness: PN, PS, PNS, and the canonical verified pair |
 | `worldkernel.mediation` | `nde_interval`, `rung12_constraints` | The response-type polytope LP for nested cross-world counterfactuals |
 | `worldkernel.barrier` | `order_parameter`, `d_critical`, BP and exact hard-core marginals | Where computing the off-diagonal stops being tractable |
-| `worldkernel.tractable` | `weitz_interval`, `ring_of_cliques`, `transfer_marginals` | The constructive answer: certified intervals everywhere, exact computation on bounded-width structure |
+| `worldkernel.tractable` | `weitz_interval`, `min_fill_order`, `treewidth_marginal`, `disjointness_graph` | The constructive answer: certified intervals everywhere, exact computation on bounded-width structure, ontology-to-width bridge |
+| `worldkernel.mcp_server` | `worldkernel-mcp` | The kernel as an MCP server: agent-facing tools that return intervals, not overclaims |
 
 Every paper number above is locked in by the test suite (`pytest`).
 

@@ -39,6 +39,7 @@ __all__ = [
     "rung12_constraints",
     "nde_vector",
     "nde_interval",
+    "nde_interval_from_record",
     "rung12_summary",
     "random_reference",
     "atom_count",
@@ -107,6 +108,63 @@ def nde_interval(
     lo = linprog(nde, A_eq=A, b_eq=b, bounds=[(0, None)] * n, method="highs")
     hi = linprog(-nde, A_eq=A, b_eq=b, bounds=[(0, None)] * n, method="highs")
     return float(nde @ lo.x), float(nde @ hi.x), lo.x, hi.x
+
+
+def nde_interval_from_record(
+    p_m_do_x: tuple[float, float],
+    p_my_do_x: dict[tuple[int, int], float],
+    p_y_do_xm: dict[tuple[int, int], float],
+) -> tuple[float, float]:
+    """Identified NDE interval from a measured experimental record.
+
+    This is the agent-facing entry point: instead of a true distribution over
+    the 64 atoms, it takes the numbers an experiment actually reports and
+    finds the identified set over every response-type law consistent with all
+    of them.
+
+    Arguments:
+      p_m_do_x:   (P(M=1 | do X=0), P(M=1 | do X=1))
+      p_my_do_x:  {(x, m): P(M=m, Y=1 | do X=x)} for x, m in {0,1}^2
+      p_y_do_xm:  {(x, m): P(Y=1 | do X=x, do M=m)} for x, m in {0,1}^2
+
+    Returns (lo, hi). Raises ValueError if the record is infeasible: no
+    response-type distribution reproduces it, meaning the numbers are
+    mutually inconsistent (or outside [0,1])."""
+    rows: list[np.ndarray] = []
+    b: list[float] = []
+
+    def add(coef_fn, value: float) -> None:
+        rows.append(np.array([coef_fn(iM, iY) for (iM, iY) in ATOMS], dtype=float))
+        b.append(float(value))
+
+    add(lambda iM, iY: 1.0, 1.0)
+    for x in (0, 1):
+        add(lambda iM, iY, x=x: 1.0 if m_val(iM, x) == 1 else 0.0, p_m_do_x[x])
+    for x in (0, 1):
+        for m in (0, 1):
+            add(
+                lambda iM, iY, x=x, m=m: 1.0
+                if (m_val(iM, x) == m and y_val(iY, x, m_val(iM, x)) == 1)
+                else 0.0,
+                p_my_do_x[(x, m)],
+            )
+    for x in (0, 1):
+        for m in (0, 1):
+            add(
+                lambda iM, iY, x=x, m=m: 1.0 if y_val(iY, x, m) == 1 else 0.0,
+                p_y_do_xm[(x, m)],
+            )
+
+    A, bv = np.array(rows), np.array(b)
+    nde = nde_vector()
+    n = len(ATOMS)
+    lo = linprog(nde, A_eq=A, b_eq=bv, bounds=[(0, None)] * n, method="highs")
+    if not lo.success:
+        raise ValueError(
+            "infeasible record: no response-type law reproduces these numbers"
+        )
+    hi = linprog(-nde, A_eq=A, b_eq=bv, bounds=[(0, None)] * n, method="highs")
+    return float(nde @ lo.x), float(nde @ hi.x)
 
 
 def rung12_summary(p0: np.ndarray) -> dict[str, float]:

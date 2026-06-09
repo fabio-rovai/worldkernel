@@ -26,12 +26,18 @@ constraints come from structured ontologies live in this class by design.
 
 from __future__ import annotations
 
+import random
+
 import numpy as np
 
 __all__ = [
     "weitz_interval",
     "ring_of_cliques",
     "transfer_marginals",
+    "min_fill_order",
+    "hardcore_z",
+    "treewidth_marginal",
+    "disjointness_graph",
 ]
 
 
@@ -129,3 +135,172 @@ def transfer_marginals(m: int, s: int, lam: float = 1.0) -> np.ndarray:
     # by rotational symmetry; vertex j of any clique is occupied in state j+1.
     p_state = np.diag(Tm) / Z
     return np.tile(p_state[1:], m)
+
+
+# ---- Route 2 generalized: any graph, parametrized by width -------------------
+
+def min_fill_order(adj) -> tuple[list[int], int]:
+    """Greedy min-fill elimination order and its induced width.
+
+    The width is the kernel's per-world tractability certificate: exact
+    off-diagonal computation below costs O(n * 2^(width+1)) regardless of
+    degree. Greedy min-fill is a heuristic, so the returned width is an upper
+    bound on the true treewidth; for the structured families here it is tight
+    or near-tight."""
+    nbrs = [set(a) for a in adj]
+    alive = set(range(len(adj)))
+    order: list[int] = []
+    width = 0
+
+    def fill_cost(v: int) -> int:
+        ns = [w for w in nbrs[v] if w in alive]
+        return sum(
+            1
+            for i, a in enumerate(ns)
+            for b in ns[i + 1 :]
+            if b not in nbrs[a]
+        )
+
+    while alive:
+        v = min(alive, key=fill_cost)
+        ns = [w for w in nbrs[v] if w in alive]
+        width = max(width, len(ns))
+        for i, a in enumerate(ns):  # connect the neighbourhood (fill-in)
+            for b in ns[i + 1 :]:
+                nbrs[a].add(b)
+                nbrs[b].add(a)
+        alive.discard(v)
+        order.append(v)
+    return order, width
+
+
+def _combine(vars_a, tab_a, vars_b, tab_b):
+    """Multiply two factors over sorted variable tuples."""
+    out_vars = tuple(sorted(set(vars_a) | set(vars_b)))
+    shape = [2] * len(out_vars)
+    a = tab_a.reshape([2 if v in vars_a else 1 for v in out_vars])
+    b = tab_b.reshape([2 if v in vars_b else 1 for v in out_vars])
+    return out_vars, np.broadcast_to(a, shape) * np.broadcast_to(b, shape)
+
+
+def hardcore_z(adj, lam: float = 1.0, clamp: dict[int, int] | None = None,
+               order: list[int] | None = None) -> float:
+    """Hard-core partition function by variable elimination.
+
+    ``clamp`` pins vertices to occupied (1) or empty (0). Cost is
+    O(n * 2^(width+1)) along the elimination order: polynomial for any
+    bounded-width constraint graph, at any degree."""
+    clamp = clamp or {}
+    n = len(adj)
+    if order is None:
+        order, _ = min_fill_order(adj)
+
+    factors: list[tuple[tuple[int, ...], np.ndarray]] = []
+    for v in range(n):
+        if v in clamp:
+            t = np.array([1.0, 0.0]) if clamp[v] == 0 else np.array([0.0, lam])
+        else:
+            t = np.array([1.0, lam])
+        factors.append(((v,), t))
+    seen = set()
+    for u in range(n):
+        for w in adj[u]:
+            if (min(u, w), max(u, w)) in seen:
+                continue
+            seen.add((min(u, w), max(u, w)))
+            factors.append(
+                (tuple(sorted((u, w))), np.array([[1.0, 1.0], [1.0, 0.0]]))
+            )
+
+    for v in order:
+        bucket = [f for f in factors if v in f[0]]
+        factors = [f for f in factors if v not in f[0]]
+        vs, tab = bucket[0]
+        for vs2, tab2 in bucket[1:]:
+            vs, tab = _combine(vs, tab, vs2, tab2)
+        axis = vs.index(v)
+        tab = tab.sum(axis=axis)
+        vs = tuple(w for w in vs if w != v)
+        factors.append((vs, tab))
+
+    z = 1.0
+    for vs, tab in factors:
+        z *= float(tab.reshape(-1).sum()) if vs else float(tab)
+    return z
+
+
+def treewidth_marginal(adj, v: int, lam: float = 1.0,
+                       order: list[int] | None = None) -> float:
+    """EXACT occupation marginal of v on any graph: Z(v occupied) / Z.
+
+    Degree-independent: a constraint graph with min-fill width w costs
+    O(n * 2^(w+1)) however far its degree sits above the Sly-Sun threshold."""
+    if order is None:
+        order, _ = min_fill_order(adj)
+    z = hardcore_z(adj, lam, order=order)
+    z1 = hardcore_z(adj, lam, clamp={v: 1}, order=order)
+    return z1 / z
+
+
+# ---- the ontology bridge ------------------------------------------------------
+
+def disjointness_graph(branching: int, depth: int, cross: float = 0.3,
+                       seed: int = 11):
+    """Constraint graph of a class taxonomy with disjointness axioms.
+
+    Models the constraint structure ontologies actually generate: a class
+    tree where every internal node's children are PAIRWISE DISJOINT (an
+    OWL AllDisjoint axiom: a sibling clique in the constraint graph), plus
+    sparse property-induced incompatibilities between COUSIN classes, i.e.
+    same-depth classes under sibling parents (random cross edges with
+    probability ``cross`` per node). Locality matters: ontology property
+    constraints relate nearby classes, and that locality is exactly what
+    keeps the width bounded.
+
+    Admissible worlds are independent sets of this graph: joint class
+    assertions violating no disjointness. The local branching factor, not the
+    ontology's size, sets the width: degree grows with ``branching`` (above
+    the Sly-Sun critical degree from branching >= 7) while min-fill width
+    stays near ``branching``, so the off-diagonal remains exactly computable
+    and the cost scales linearly in the number of classes."""
+    rng = random.Random(seed)
+    levels: list[list[int]] = []
+    parent: dict[int, int] = {}
+    nxt = 0
+    current = [None]  # virtual root
+    for _ in range(depth):
+        new_level: list[int] = []
+        for p in current:
+            kids = list(range(nxt, nxt + branching))
+            nxt += branching
+            for k in kids:
+                parent[k] = p
+            new_level.extend(kids)
+        levels.append(new_level)
+        current = new_level
+    n = nxt
+    adj = [set() for _ in range(n)]
+    for lvl in levels:
+        by_parent: dict = {}
+        for v in lvl:
+            by_parent.setdefault(parent[v], []).append(v)
+        for kids in by_parent.values():  # AllDisjoint: sibling clique
+            for i, a in enumerate(kids):
+                for b in kids[i + 1 :]:
+                    adj[a].add(b)
+                    adj[b].add(a)
+        for v in lvl:  # sparse property-induced incompatibilities (cousins)
+            pv = parent[v]
+            if pv is None or rng.random() >= cross:
+                continue
+            cousins = [
+                w
+                for w in lvl
+                if parent[w] != pv and parent[w] is not None
+                and parent.get(parent[w]) == parent.get(pv)
+            ]
+            if cousins:
+                w = rng.choice(cousins)
+                adj[v].add(w)
+                adj[w].add(v)
+    return adj
