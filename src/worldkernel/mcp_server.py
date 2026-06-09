@@ -221,6 +221,107 @@ def mediation_scaling(n_mediators: int) -> dict[str, Any]:
     }
 
 
+@mcp.tool()
+def bounds_from_counts(
+    n_control: int, successes_control: int, n_treated: int,
+    successes_treated: int, coverage: float = 0.95,
+) -> dict[str, Any]:
+    """Rung-3 intervals from raw trial COUNTS with a simultaneous coverage
+    guarantee (Wilson + Bonferroni, corner-evaluated). Separates the part of
+    the width that shrinks with n (sampling) from the part that never does
+    (identification)."""
+    from .estimate import harmed_bounds_from_counts, pn_bounds_from_counts
+
+    pn = pn_bounds_from_counts(
+        n_control, successes_control, n_treated, successes_treated, coverage
+    )
+    h = harmed_bounds_from_counts(
+        n_control, successes_control, n_treated, successes_treated, coverage
+    )
+    return {
+        "pn_interval": [pn.lo, pn.hi],
+        "pn_identified_core": [pn.identified_lo, pn.identified_hi],
+        "pn_sampling_inflation": pn.sampling_inflation,
+        "harmed_interval": [h.lo, h.hi],
+        "coverage": coverage,
+        "note": "the identified core never shrinks with n; only an "
+        "assumption closes it (see evaluate_assumption)",
+    }
+
+
+@mcp.tool()
+def evaluate_assumption(
+    name: str, r0: float, r1: float, value: float | None = None
+) -> dict[str, Any]:
+    """Validate a proposed coupling assumption against the marginals and
+    price exactly what it buys. Vocabulary: monotone, independent, no_harm,
+    correlation_at_most (needs value), coupling (needs value). Inadmissible
+    proposals are refused. Adopting an admissible one is a modelling
+    decision, not a finding: rung-1/2 data can never refute it."""
+    from .propose import evaluate
+
+    nar = evaluate(name, r0, r1, value)
+    return {
+        "assumption": nar.assumption,
+        "admissible": nar.admissible,
+        "coupling_interval": list(nar.coupling_interval),
+        "pn_before": list(nar.pn_before),
+        "pn_after": list(nar.pn_after),
+        "harmed_after": list(nar.harmed_after),
+        "pn_width_bought": nar.pn_width_bought,
+        "note": nar.note,
+    }
+
+
+@mcp.tool()
+def decide_under_uncertainty(
+    options: dict[str, list[float]], rule: str = "maximin",
+    hurwicz_alpha: float = 0.5,
+) -> dict[str, Any]:
+    """Choose between actions whose utilities are intervals [lo, hi] (from
+    kernel queries). Rules: maximin, minimax_regret, hurwicz. Also reports
+    whether the data already determine the choice (interval dominance) and,
+    if not, which intervals are pivotal: the value-of-information map."""
+    from .decide import decide
+
+    d = decide(
+        {k: (float(v[0]), float(v[1])) for k, v in options.items()},
+        rule=rule, hurwicz_alpha=hurwicz_alpha,
+    )
+    return {
+        "action": d.action,
+        "rule": d.rule,
+        "scores": d.scores,
+        "determined_by_data": d.determined,
+        "undominated": d.contenders,
+        "pivotal_widths": d.pivotal_widths,
+        "note": d.note,
+    }
+
+
+@mcp.tool()
+def trajectory_counterfactual(
+    observed_slips: list[int], p_slip: float, moves_needed: int
+) -> dict[str, Any]:
+    """Episode-level counterfactual: 'I took route A and observed these
+    slips; would route B have reached the goal?' Exact identified interval
+    over all admissible per-step couplings (Poisson-binomial DP at per-step
+    endpoints), plus the independence point a predictive world model commits
+    to, which ignores the episode's own evidence."""
+    from .dynamics import counterfactual_success_interval, independence_point
+
+    lo, hi = counterfactual_success_interval(observed_slips, p_slip, moves_needed)
+    return {
+        "cf_success_interval": [lo, hi],
+        "independence_point": independence_point(
+            observed_slips, p_slip, moves_needed
+        ),
+        "steps": len(observed_slips),
+        "note": "the predictor's point is one admissible coupling among "
+        "many and does not condition on the observed slips",
+    }
+
+
 def main() -> None:
     mcp.run()
 

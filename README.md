@@ -93,6 +93,40 @@ The architecture, made operational: the kernel is the world model, the LLM is a 
 
 Every tool returns intervals where intervals are the truth, and the server's instructions tell the agent not to pick a point inside one without stating the assumption that picks it. That is the agent loop of [ROADMAP](ROADMAP.md) v0.4: the LLM reads the world and proposes; the kernel computes, certifies, and refuses to overclaim.
 
+## The WorldModel object (v0.2): one front door, every engine
+
+`WorldModel` is the architecture consolidated: register structure, feed data (exact marginals or raw counts), adopt validated assumptions, ask queries. Every answer is a `Verdict` carrying the interval, the engine that produced it, whether it is exact, and the diagnostics that say why. Dispatch is automatic: closed-form sharp bounds, corner-evaluated confidence boxes when data are finite (simultaneous coverage, simulation-tested), the mediation LP, exact variable elimination when the width certificate allows, Weitz certificates when it does not.
+
+```python
+from worldkernel import WorldModel
+
+wm = WorldModel()
+wm.observe_counts("control", 260, 168).observe_counts("treated", 185, 140)  # NSW
+v = wm.pn("control", "treated")
+# Verdict([0.0000, 0.6214], engine=corner-evaluated confidence box, exact=False)
+v.diagnostics["identified_core"]        # (0.146, 0.468): what more data never shrinks
+wm.assume("monotone", "control", "treated")   # validated; inadmissible -> refused
+wm.pn("control", "treated")             # collapses to the pinned point
+
+# time: "I took route A and slipped on steps 1, 4, 8; would B have made it?"
+cf = wm.trajectory_cf([1,0,0,1,0,0,0,1,0], p=0.3, moves_needed=6)
+# exact identified interval; diagnostics carry the predictor's blind point
+
+# decide on intervals, not points
+wm.decide({"retry A": (0.55, 0.55), "switch to B": cf}, rule="minimax_regret")
+# reports the choice, whether data already determine it, and which
+# interval widths are pivotal: the value-of-information map
+```
+
+The four layers underneath, each individually tested:
+
+- `worldkernel.estimate`: counts to intervals with a simultaneous coverage guarantee (Wilson + Bonferroni, corner-evaluated; nominal coverage verified by simulation). Sampling inflation and identification core reported separately.
+- `worldkernel.dynamics`: sequential potential outcomes. Episode-level counterfactual success bounds, exact over the product of per-step coupling boxes (monotone Poisson-binomial DP), validated against 60,000-episode Monte Carlo. The predictor's independence answer provably ignores the episode's own evidence.
+- `worldkernel.propose`: the proposer interface. An LLM proposes assumptions (monotone, independent, bounded correlation, explicit coupling); the kernel validates admissibility, refuses inadmissible ones, and prices what each admissible one buys, with the honest note that rung-1/2 data can never refute an admissible coupling.
+- `worldkernel.decide`: act on intervals. Maximin, minimax regret, Hurwicz; interval-dominance check ("is the choice already determined by the data?") and pivotal widths (which assumption or experiment is worth buying).
+
+All of this is exposed over MCP too (`bounds_from_counts`, `evaluate_assumption`, `decide_under_uncertainty`, `trajectory_counterfactual`), completing the agent loop: sensor proposes, kernel calculates, decision layer acts on what is actually known.
+
 ## Quickstart
 
 ```bash

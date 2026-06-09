@@ -21,9 +21,13 @@ Built in public: every milestone is tracked as a GitHub issue, every claim lands
 - [x] Trick Room inherited (`trickroom/`): ontology-compiled substrate beats pretrained latent world model 82% vs 48% on Two-Room in the platform's own CEM-MPC harness; full results, scripts, audit trail preserved from the archived fork
 - [x] The World Model Arena (`worldkernel.arena`, from v0.5 benchmark-battery scope): 5 world classes x 6 contenders x proper Winkler scoring at two risk levels; kernel best mean rank in both regimes, 100% coverage everywhere, with the honest k-arm crossover where committing pays at loose risk
 
-## v0.2: estimation (the kernel meets data)
+## v0.2: estimation (the kernel meets data) — released as v0.2.0
 
-- [ ] Finite-sample diagonals: estimate marginals from trial data with confidence intervals, propagate into the bounds
+- [x] Finite-sample diagonals: Wilson + Bonferroni corner-evaluated bounds with simultaneous coverage (simulation-verified); sampling inflation vs identification core reported separately (`worldkernel.estimate`)
+- [x] The unifying `WorldModel` object: one front door, automatic engine dispatch, `Verdict` with certificates (`worldkernel.model`)
+- [x] Time: sequential potential outcomes, exact episode-level counterfactual bounds, MC-validated (`worldkernel.dynamics`)
+- [x] Decision layer: maximin / minimax regret / Hurwicz on intervals, interval dominance, value-of-information (`worldkernel.decide`)
+- [x] Proposer interface: assumption vocabulary, admissibility validation, priced narrowings (`worldkernel.propose`; the kernel-side half of v0.3)
 - [ ] Balke-Pearl instrumental-variable LP as the primary classical baseline, same API
 - [ ] The 2-mediator, 4096-atom LP: report interval and timing (the barrier made empirical)
 - [ ] Off-the-shelf comparison: DoWhy/PyWhy bounds on the same instances

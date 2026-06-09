@@ -22,7 +22,27 @@ def test_all_tools_registered():
         "exact_marginal_by_width",
         "barrier_diagnostics",
         "mediation_scaling",
+        "bounds_from_counts",
+        "evaluate_assumption",
+        "decide_under_uncertainty",
+        "trajectory_counterfactual",
     }
+
+
+def test_agent_loop_tools():
+    est = mcp_server.bounds_from_counts(260, 168, 185, 140)
+    assert est["pn_sampling_inflation"] > 0
+    nar = mcp_server.evaluate_assumption("monotone", 0.5, 0.7)
+    assert nar["admissible"] and nar["pn_width_bought"] > 0.4
+    bad = mcp_server.evaluate_assumption("coupling", 0.5, 0.7, value=0.9)
+    assert not bad["admissible"]
+    d = mcp_server.decide_under_uncertainty(
+        {"A": [0.4, 0.9], "B": [0.5, 0.6]}, rule="maximin"
+    )
+    assert d["action"] == "B" and not d["determined_by_data"]
+    t = mcp_server.trajectory_counterfactual([1, 0, 0, 1, 0, 0, 0, 1, 0], 0.3, 6)
+    lo, hi = t["cf_success_interval"]
+    assert lo - 1e-9 <= t["independence_point"] <= hi + 1e-9
 
 
 def test_counterfactual_bounds_tool():
