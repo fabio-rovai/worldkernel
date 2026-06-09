@@ -45,6 +45,15 @@ Headline results (`experiments/arena.py`, seed 11, locked by tests on an indepen
 
 ![Arena](figs/arena.png)
 
+**LLMs as contenders, via AISI Inspect.** [integrations/inspect_arena.py](integrations/inspect_arena.py) packages the arena as an [Inspect AI](https://inspect.aisi.org.uk) task (the UK AI Security Institute's evaluation framework, the one ControlArena is built on), so any LLM can be dropped into the arena and scored with the same Winkler rule, with the kernel's identified interval logged beside every sample. The model is told it may answer with an interval; the eval measures whether an LLM world-model knows what it cannot know.
+
+```bash
+pip install inspect-ai
+inspect eval integrations/inspect_arena.py --model anthropic/claude-sonnet-4-6
+```
+
+Metrics: Winkler at both risk levels, coverage, overclaim rate, and per-question regret against the kernel.
+
 ## Trick Room: the thesis as a working planner
 
 [trickroom/](trickroom/) preserves the Trick Room project (inherited from a now-archived private fork of stable-worldmodel): an ontology-specified symbolic substrate (`tbox/tworoom.ttl`, compiled to dynamics, zero training trajectories) plugged into the platform's own CEM-MPC harness, beating a pretrained latent world model **82% vs 48%** on Two-Room planning under audited sequential evaluation, with smaller and more predictable OOD degradation. It is the constructive complement to the witness above: prediction misses the off-diagonal, and what replaces it is writing the world down and compiling it, exactly the ontology-to-width route. Full results, benchmark scripts, engines and the honest evaluation-artefact audit are inside.

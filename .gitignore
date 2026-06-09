@@ -10,3 +10,5 @@ venv/
 *.log
 experiments/*_repro.png
 experiments/data/
+logs/
+logs/
