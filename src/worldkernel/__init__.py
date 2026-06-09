@@ -14,6 +14,7 @@ from .backdoor import (
     verify_backdoor,
 )
 from .barrier import d_critical, order_parameter
+from .continuation import indep_poly, log_taylor_estimate, shearer_radius, zero_moat
 from .decide import Decision, decide
 from .dynamics import (
     CorridorWorld,
@@ -80,5 +81,9 @@ __all__ = [
     "kmm_exact_marginal",
     "SumcheckProver",
     "verify_z",
+    "indep_poly",
+    "zero_moat",
+    "shearer_radius",
+    "log_taylor_estimate",
     "__version__",
 ]
