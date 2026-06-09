@@ -19,6 +19,7 @@ Built in public: every milestone is tracked as a GitHub issue, every claim lands
 - [x] The MCP server (from v0.4 scope): `worldkernel-mcp` exposes 8 kernel tools (counterfactual bounds, NDE from measured records, certified and exact marginals, barrier diagnostics) to any MCP client; `nde_interval_from_record` agent-facing entry point
 - [x] External platform test: the off-diagonal witness embedded in stable-worldmodel's TwoRoom via its own Gym API (`experiments/swm_witness.py`); rung-3 truth 1.000 vs 0.298 on identical training data
 - [x] Trick Room inherited (`trickroom/`): ontology-compiled substrate beats pretrained latent world model 82% vs 48% on Two-Room in the platform's own CEM-MPC harness; full results, scripts, audit trail preserved from the archived fork
+- [x] The World Model Arena (`worldkernel.arena`, from v0.5 benchmark-battery scope): 5 world classes x 6 contenders x proper Winkler scoring at two risk levels; kernel best mean rank in both regimes, 100% coverage everywhere, with the honest k-arm crossover where committing pays at loose risk
 
 ## v0.2: estimation (the kernel meets data)
 

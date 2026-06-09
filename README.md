@@ -32,6 +32,19 @@ Today's "world models" are predictors: they learn the law of what happens. The c
 
 **5. The witness inside a real world-model platform.** `experiments/swm_witness.py` embeds the off-diagonal witness in [stable-worldmodel](https://github.com/galilai-group/stable-worldmodel)'s TwoRoom environment through its own Gym API: two slip-noise worlds with identical per-action slip marginals (audited on 9,600+ steps per world: max rate gap 0.016 inside the 0.019 sampling band, and exactly equal by construction since the env is otherwise deterministic) but opposite cross-action coupling. The planner-relevant rung-3 query, "this step slipped; would the other action have slipped too?", has measured ground truth **1.000 in one world and 0.298 in the other**. Any world model trained on the platform sees the same data in both and answers with one number; the kernel reports the identified interval and, handed the coupling, scores exact in both worlds.
 
+## The World Model Arena
+
+`worldkernel.arena` is the demonstration at scale: 208 scored queries across **five world classes** (random two-world SCMs, the same under finite samples, mediation laws with free couplings, k-arm coherence, and hard-core constraint worlds spanning random graphs, rings and taxonomies), answered by **six contender strategies** and scored with the **Winkler interval score**, a proper scoring rule under which sharp valid intervals win, loose intervals pay for width, and a point answer pays in full whenever it is wrong. The arena knows each world's full law; contenders only ever see what an experiment would reveal.
+
+Headline results (`experiments/arena.py`, seed 11, locked by tests on an independent seed):
+
+- **The kernel is the only contender that enters all five classes, and holds 100% coverage and 0% overclaim in every one.** Mean rank 1.60 when errors are tolerable (α = 0.2), 1.40 when errors are expensive (α = 0.02), best in both regimes.
+- **The standard predictor (independence coupling, mediation plug-in formula, BP) overclaims on 62-95% of queries** depending on class, with 0% coverage; at the safety-critical risk level its score is 10-50x worse than the kernel's.
+- **The arena is not rigged.** In the k-arm class the predictor's gamble genuinely pays at loose risk tolerance (0.04 vs 0.26) and stops paying when misses cost 100x their distance (0.36 vs 0.26). The kernel's win is a risk statement, not a fixed fight: *guaranteed coverage dominates exactly when being wrong is expensive*, and the arena measures where that crossover sits.
+- **Finite samples break unwidened boxes, not the kernel**: with 500-patient arms, the raw Fréchet box slips to 96% coverage; the kernel's CI-widened intervals hold 100%.
+
+![Arena](figs/arena.png)
+
 ## Trick Room: the thesis as a working planner
 
 [trickroom/](trickroom/) preserves the Trick Room project (inherited from a now-archived private fork of stable-worldmodel): an ontology-specified symbolic substrate (`tbox/tworoom.ttl`, compiled to dynamics, zero training trajectories) plugged into the platform's own CEM-MPC harness, beating a pretrained latent world model **82% vs 48%** on Two-Room planning under audited sequential evaluation, with smaller and more predictable OOD degradation. It is the constructive complement to the witness above: prediction misses the off-diagonal, and what replaces it is writing the world down and compiling it, exactly the ontology-to-width route. Full results, benchmark scripts, engines and the honest evaluation-artefact audit are inside.
