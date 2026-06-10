@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](pyproject.toml)
 
-This repository builds, in public, the reference implementation of the framework in the paper *WorldKernel: A World Model is the Coupling Kernel of Admissible Possible Worlds* (Fabio Rovai, preprint in preparation).
+This repository builds, in public, the reference implementation of the framework in the paper [*WorldKernel: A World Model is the Coupling Kernel of Admissible Possible Worlds*](https://arxiv.org/abs/2606.10934) (Fabio Rovai, arXiv:2606.10934). Everything in this repo beyond the paper's results (the escape hatches, the four barrier-attack probes, the arena, the frontier audits, the WorldModel architecture, continuous outcomes) is material for the follow-up paper, developed here in public first.
 
 ## The idea in one paragraph
 
@@ -239,16 +239,18 @@ Built in public. The full plan is in [ROADMAP.md](ROADMAP.md); every milestone i
 
 ## Citing
 
-Paper preprint in preparation. Until it is up:
-
 ```bibtex
-@software{rovai2026worldkernel,
-  author = {Rovai, Fabio},
-  title  = {WorldKernel: A World Model is the Coupling Kernel of Admissible Possible Worlds},
-  year   = {2026},
-  url    = {https://github.com/fabio-rovai/worldkernel}
+@misc{rovai2026worldkernel,
+  author        = {Rovai, Fabio},
+  title         = {WorldKernel: A World Model is the Coupling Kernel of Admissible Possible Worlds},
+  year          = {2026},
+  eprint        = {2606.10934},
+  archivePrefix = {arXiv},
+  url           = {https://arxiv.org/abs/2606.10934}
 }
 ```
+
+For the software itself, cite the repository: https://github.com/fabio-rovai/worldkernel
 
 ## License
 
