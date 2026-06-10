@@ -82,6 +82,30 @@ The Sly-Sun theorem forbids exactly one thing: a general efficient algorithm for
 
 Together: *below threshold compute, small backdoor condition, low phase rank quotient, otherwise verify proofs or return the certified interval.* The barrier is not beaten; it is factored, and its deepest form is the geometry of complex zeros, not a degree count.
 
+## Beyond binary: continuous outcomes (Tier A)
+
+`worldkernel.continuous` lifts the kernel to continuous state, where frontier world models live: **Makarov bounds** on the distribution of individual effects Y₁ − Y₀ (pointwise sharp over all couplings of the identified marginals), **Fréchet-Hoeffding coupling extremes** for super/submodular functionals via sorted optimal-transport matchings (E|Y₁ − Y₀| is bounded below by the Wasserstein distance and above by the antimonotone matching), and **quantile-level identification** with the quantile-treatment-effect curve exposed for what it is: the comonotone *choice* inside the Makarov interval, not a fact. All sample-based, all validated against explicit couplings sharing the same marginals.
+
+## The frontier audit
+
+`experiments/frontier_audit.py` audits a live frontier LLM (Claude, via CLI) on arena questions under two harness conditions. The finding (coverage/overclaim are the primary metrics; raw score magnitudes carry response-format parsing artifacts):
+
+| class | condition | coverage | overclaim |
+| --- | --- | --- | --- |
+| two-arm PN | point-forced | 12% | 75% |
+| two-arm PN | interval-permitted | **88%** | **12%** |
+| mediation NDE | point-forced | 0% | 100% |
+| mediation NDE | interval-permitted | **0%** | **100%** |
+
+Two results in one table. First, the **harness tax**: on questions whose honest answer the model *knows* (Tian-Pearl bounds), the standard point-consuming interface destroys that knowledge. Second, the **computation gap**: on the NDE, where the honest answer is the solution of an LP over the response-type polytope, permission to be honest does not help at all; the interval is a computation, not a fact to recall, and it is not in the model. The kernel computes it in milliseconds. The full argument is in [docs/POSITION_PAPER.md](docs/POSITION_PAPER.md); the path into AISI's catalogue is [integrations/INSPECT_EVALS_SUBMISSION.md](integrations/INSPECT_EVALS_SUBMISSION.md).
+
+## Learned structure and the proof-carrying protocol (Tier B)
+
+- `worldkernel.learn`: constraints from data. A statistical screen proposes disjointness edges from co-occurrence (zero observed co-count, high expected count), the kernel rejects data-contradicted proposals, and the learned graph arrives with its **width certificate attached**: the structure carries its own tractability guarantee. Tested by recovering taxonomy worlds from Glauber-sampled observations.
+- [docs/PROOF_CARRYING_PROTOCOL.md](docs/PROOF_CARRYING_PROTOCOL.md): the PCWE wire format, "world-model entry = interval + certificate", with seven certificate types in three trust modes (recompute / check witness / interact). The `verify_entry` MCP tool is the reference verifier: valid backdoor entries verify, false claims are caught by recomputation, broken certificates are caught in linear time before any computation.
+
+Deployment positioning (where certificates beat fidelity): [docs/VERTICALS.md](docs/VERTICALS.md).
+
 ## Use it from any agent: the MCP server
 
 The architecture, made operational: the kernel is the world model, the LLM is a sensor. With the `mcp` extra installed, `worldkernel-mcp` exposes the kernel over the Model Context Protocol, so Claude Code or any MCP client can call it as tools:

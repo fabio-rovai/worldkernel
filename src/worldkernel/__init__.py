@@ -15,6 +15,15 @@ from .backdoor import (
 )
 from .barrier import d_critical, order_parameter
 from .continuation import indep_poly, log_taylor_estimate, shearer_radius, zero_moat
+from .continuous import (
+    abs_effect_bounds,
+    comonotone_qte,
+    effect_quantile_bounds,
+    makarov_bounds,
+    prob_benefit_bounds,
+    supermodular_extremes,
+)
+from .learn import LearnedStructure, learn_constraints, sample_worlds
 from .decide import Decision, decide
 from .dynamics import (
     CorridorWorld,
@@ -85,5 +94,14 @@ __all__ = [
     "zero_moat",
     "shearer_radius",
     "log_taylor_estimate",
+    "makarov_bounds",
+    "prob_benefit_bounds",
+    "effect_quantile_bounds",
+    "comonotone_qte",
+    "abs_effect_bounds",
+    "supermodular_extremes",
+    "learn_constraints",
+    "LearnedStructure",
+    "sample_worlds",
     "__version__",
 ]

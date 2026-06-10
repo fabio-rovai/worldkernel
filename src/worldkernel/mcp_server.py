@@ -322,6 +322,53 @@ def trajectory_counterfactual(
     }
 
 
+@mcp.tool()
+def verify_entry(entry: dict[str, Any]) -> dict[str, Any]:
+    """Verify a proof-carrying world-model entry (PCWE protocol v0.1, see
+    docs/PROOF_CARRYING_PROTOCOL.md). Supports certificate types 'backdoor'
+    (linear-time witness check + recomputation) and 'exact-elimination'
+    (width check + recomputation). Returns verified true/false and the
+    recomputed answer where applicable."""
+    from .backdoor import backdoor_marginal, verify_backdoor
+    from .tractable import min_fill_order, treewidth_marginal
+
+    try:
+        edges = entry["query"]["instance"]["edges"]
+        n = max(max(e) for e in edges) + 1
+        adj = [set() for _ in range(n)]
+        for u, v in edges:
+            adj[u].add(v)
+            adj[v].add(u)
+        cert = entry["certificate"]
+        ans = entry["answer"]
+        kind = entry["query"]["kind"]
+        if kind != "occupation_marginal":
+            return {"verified": False, "reason": f"unsupported query kind {kind}"}
+        vertex = int(entry["query"]["params"]["vertex"])
+
+        if cert["type"] == "backdoor":
+            B = set(cert["data"]["B"])
+            if not verify_backdoor(adj, B):
+                return {"verified": False, "reason": "backdoor certificate invalid"}
+            value = backdoor_marginal(adj, vertex, B)
+        elif cert["type"] == "exact-elimination":
+            order, width = min_fill_order(adj)
+            if width > 22:
+                return {"verified": False, "reason": "width too large to recompute"}
+            value = treewidth_marginal(adj, vertex, order=order)
+        else:
+            return {
+                "verified": False,
+                "reason": f"certificate type {cert['type']} needs the "
+                "interactive path (sumcheck) or is not yet supported",
+            }
+        ok = ans["lo"] - 1e-9 <= value <= ans["hi"] + 1e-9
+        return {"verified": bool(ok), "recomputed_value": value,
+                "claimed": [ans["lo"], ans["hi"]]}
+    except (KeyError, TypeError, ValueError) as e:
+        return {"verified": False, "reason": f"malformed entry: {e}"}
+
+
 def main() -> None:
     mcp.run()
 

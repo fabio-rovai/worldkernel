@@ -28,6 +28,12 @@ Built in public: every milestone is tracked as a GitHub issue, every claim lands
 - [x] Time: sequential potential outcomes, exact episode-level counterfactual bounds, MC-validated (`worldkernel.dynamics`)
 - [x] Decision layer: maximin / minimax regret / Hurwicz on intervals, interval dominance, value-of-information (`worldkernel.decide`)
 - [x] Proposer interface: assumption vocabulary, admissibility validation, priced narrowings (`worldkernel.propose`; the kernel-side half of v0.3)
+- [x] Continuous outcomes (Tier A): Makarov bounds, OT coupling extremes, quantile identification (`worldkernel.continuous`)
+- [x] Frontier audit (Tier A): live audit of Claude; harness tax measured (PN coverage 12% -> 88% when intervals permitted), computation gap measured (NDE 100% overclaim regardless)
+- [x] Metric ownership (Tier A): position paper draft (docs/POSITION_PAPER.md), inspect_evals submission package prepared
+- [x] Structure learning (Tier B): disjointness constraints from data with width certificates (`worldkernel.learn`)
+- [x] Proof-carrying entry protocol (Tier B): PCWE v0.1 spec + `verify_entry` MCP reference verifier
+- [x] Verticals positioning (Tier C): docs/VERTICALS.md
 - [ ] Balke-Pearl instrumental-variable LP as the primary classical baseline, same API
 - [ ] The 2-mediator, 4096-atom LP: report interval and timing (the barrier made empirical)
 - [ ] Off-the-shelf comparison: DoWhy/PyWhy bounds on the same instances

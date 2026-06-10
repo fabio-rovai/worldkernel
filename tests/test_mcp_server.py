@@ -26,7 +26,36 @@ def test_all_tools_registered():
         "evaluate_assumption",
         "decide_under_uncertainty",
         "trajectory_counterfactual",
+        "verify_entry",
     }
+
+
+def test_verify_entry_backdoor_roundtrip():
+    from worldkernel import backdoor_marginal, find_backdoor, hub_world
+
+    adj = hub_world(10, 3, 1, 6)
+    edges = [[u, v] for u in range(len(adj)) for v in adj[u] if u < v]
+    B = find_backdoor(adj)
+    val = backdoor_marginal(adj, 0, B)
+    entry = {
+        "query": {"kind": "occupation_marginal",
+                  "instance": {"edges": edges}, "params": {"vertex": 0}},
+        "answer": {"lo": val, "hi": val},
+        "certificate": {"type": "backdoor", "data": {"B": sorted(B)}},
+    }
+    out = mcp_server.verify_entry(entry)
+    assert out["verified"]
+    # a false claim with a valid certificate is caught by recomputation
+    entry["answer"] = {"lo": val + 0.1, "hi": val + 0.1}
+    assert not mcp_server.verify_entry(entry)["verified"]
+    # a broken certificate is caught before any computation
+    entry["certificate"]["data"]["B"] = []
+    out = mcp_server.verify_entry(entry)
+    assert not out["verified"] and "certificate" in out["reason"]
+
+
+def test_verify_entry_malformed():
+    assert not mcp_server.verify_entry({"nonsense": 1})["verified"]
 
 
 def test_agent_loop_tools():
