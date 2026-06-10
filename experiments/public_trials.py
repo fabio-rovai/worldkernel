@@ -54,6 +54,7 @@ SOURCES = {
     "nsw.dta": "https://raw.githubusercontent.com/scunning1975/mixtape/master/nsw_mixtape.dta",
     "ist.csv": "https://datashare.ed.ac.uk/bitstream/handle/10283/124/IST_corrected.csv",
     "star.csv": "https://vincentarelbundock.github.io/Rdatasets/csv/AER/STAR.csv",
+    "bank.zip": "https://archive.ics.uci.edu/ml/machine-learning-databases/00222/bank.zip",
 }
 
 
@@ -123,6 +124,22 @@ def ist_counts():
     return out
 
 
+def bank_marketing_counts():
+    """UCI Bank Marketing (Moro et al. 2014). Treatment = prior-campaign outcome
+    (success vs failure), Y = subscribed a term deposit. A large identified ACE
+    whose probability of necessity is still only bounded to an interval."""
+    import zipfile
+
+    with zipfile.ZipFile(fetch("bank.zip")) as z, z.open("bank.csv") as f:
+        df = pd.read_csv(f, sep=";")
+    sub = df[df.poutcome.isin(["success", "failure"])]
+    out = {}
+    for arm, t in (("failure", 0), ("success", 1)):
+        s = sub[sub.poutcome == arm]
+        out[t] = (len(s), int((s.y == "yes").sum()))
+    return out
+
+
 # ---- three-arm analysis (STAR): a real k=3 kernel ---------------------------
 
 def star_analysis():
@@ -167,6 +184,10 @@ def main() -> None:
     i = ist_counts()
     ist = two_arm_report("IST aspirin (Y = alive at 14 days)",
                          i[0][0], i[0][1], i[1][0], i[1][1])
+    b = bank_marketing_counts()
+    bank = two_arm_report(
+        "UCI Bank Marketing (prior-campaign success, Y = subscribed term deposit)",
+        b[0][0], b[0][1], b[1][0], b[1][1])
     star_analysis()
 
     try:
@@ -175,22 +196,22 @@ def main() -> None:
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
 
-        fig, ax = plt.subplots(figsize=(8, 3.8))
-        for y, r in ((1, nsw), (0, ist)):
+        fig, ax = plt.subplots(figsize=(8, 4.4))
+        for y, r in ((2, bank), (1, nsw), (0, ist)):
             lo, hi = r["pn"]
             ax.plot([lo, hi], [y, y], lw=8, color="#1f77b4", alpha=0.35,
                     solid_capstyle="butt",
-                    label="identified PN interval (off-diagonal freedom)" if y == 1 else None)
+                    label="identified PN interval (off-diagonal freedom)" if y == 2 else None)
             ax.plot([r["lo_ci"][0], r["lo_ci"][1]], [y, y], lw=2.5, color="k",
-                    label="bootstrap 95% CI on endpoints" if y == 1 else None)
+                    label="bootstrap 95% CI on endpoints" if y == 2 else None)
             ax.plot([r["hi_ci"][0], r["hi_ci"][1]], [y, y], lw=2.5, color="k")
             ax.scatter([r["mono"]], [y], marker="v", color="#2ca02c", zorder=5,
-                       label="monotonicity point" if y == 1 else None)
+                       label="monotonicity point" if y == 2 else None)
             ax.scatter([r["indep"]], [y], marker="o", color="crimson", zorder=5,
-                       label="independence point" if y == 1 else None)
-        ax.set_yticks([1, 0])
-        ax.set_yticklabels(["NSW\n(n=445)", "IST\n(n=19,435)"])
-        ax.set_ylim(-0.55, 1.55)
+                       label="independence point" if y == 2 else None)
+        ax.set_yticks([2, 1, 0])
+        ax.set_yticklabels(["Bank Mktg\n(n=619)", "NSW\n(n=445)", "IST\n(n=19,435)"])
+        ax.set_ylim(-0.55, 2.55)
         ax.set_xlabel("probability of necessity (PN)")
         ax.set_title("Real trials identify the diagonal; rung 3 stays an interval.\n"
                      "Sampling error (black) shrinks with n; off-diagonal freedom (blue) does not.")
