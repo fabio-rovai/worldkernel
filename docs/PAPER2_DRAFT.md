@@ -100,10 +100,27 @@ Each attack aims at the NP = RP assumption itself; each probe is in
 | affine IDL (isolate, densify, linearize) | `idl_probe.py` | first Macaulay degree IDENTICAL scrambled vs plain, grows with n | degree is an affine invariant |
 | nonlinear bending | (theory only) | constant-width opening of Feistel-like covers would break standard crypto | low-width pseudorandomness |
 | VV parity (isolate, then parity) | `vv_parity_probe.py` | max intermediate ANF width flat across bucket sizes 0/1/2/3+ (3211/3372/2952/2615) | parity pseudorandomness under isolation |
+| localized IDL (adjoin inverses) | `lidl_probe.py` | POSITIVE micro-result verified: one localizer t(1-s)=1 collapses the selector-core obstruction to degree 3 while plain Macaulay needs degree 5; but random localizers over F_p change nothing (r = 0/1/2/4 identical) and rank-greedy selection has no signal (uniform gains) | rational pseudorandomness of isolated zeros: working localizers vanish on the rejected branch, i.e. they ENCODE witness bits; finding the chart is the original search problem |
+
+Highlight for the text (Lemma + verified computation): localization is the
+first route that genuinely changes the proof system rather than the
+instance. The selector-core no-go dies because substituting s = 1 into
+t(1-s) = 1 yields -1 = 0: the hard branch is excised from the chart, not
+refuted; and the degree-3 collapse is machine-verified against a hidden
+core that plain Macaulay cannot crack below degree 5. The relocation
+pattern then becomes precise rather than rhetorical: localizers that work
+are partial witnesses (g = 1-s vanishes exactly where s = 1), random
+denominators over large fields are units on the whole cube (hence
+interpolatable, hence at most a factor-n degree saving), and unaided
+selection shows zero gain. Open refinement: the rank-gain objective for
+'proof scars' is non-discriminating (every localizer contributes the same
+block rank); the right objective is damage to the x-sector nullspace.
 
 Section thesis: every route relocates the hardness into a measurable object
 rather than removing it, exactly as NP != RP predicts; each probe is a
-standing falsification target.
+standing falsification target. The localized route sharpens this from
+slogan to mechanism: the wall is not that charts do not help, it is that
+helpful charts are made of witness bits.
 
 ## 5. The architecture
 
