@@ -100,21 +100,36 @@ Each attack aims at the NP = RP assumption itself; each probe is in
 | affine IDL (isolate, densify, linearize) | `idl_probe.py` | first Macaulay degree IDENTICAL scrambled vs plain, grows with n | degree is an affine invariant |
 | nonlinear bending | (theory only) | constant-width opening of Feistel-like covers would break standard crypto | low-width pseudorandomness |
 | VV parity (isolate, then parity) | `vv_parity_probe.py` | max intermediate ANF width flat across bucket sizes 0/1/2/3+ (3211/3372/2952/2615) | parity pseudorandomness under isolation |
-| localized IDL (adjoin inverses) | `lidl_probe.py` | POSITIVE micro-result verified: one localizer t(1-s)=1 collapses the selector-core obstruction to degree 3 while plain Macaulay needs degree 5; but random localizers over F_p change nothing (r = 0/1/2/4 identical) and rank-greedy selection has no signal (uniform gains) | rational pseudorandomness of isolated zeros: working localizers vanish on the rejected branch, i.e. they ENCODE witness bits; finding the chart is the original search problem |
+| localized IDL (adjoin inverses) | `lidl_probe.py` | POSITIVE micro-result verified: one localizer t(1-s)=1 collapses the selector-core obstruction to degree 3 while plain Macaulay needs degree 5; but random localizers over F_p change nothing (r = 0/1/2/4 identical) and rank-greedy selection has no signal (uniform gains) | localizers that work are zero-divisor scars (annihilators), not charts; random charts are units |
+| saturating LIDL (solve for annihilators) | `saturation_lidl_probe.py` | the selector localizer 1-s is DISCOVERED as z_1's formula-driven annihilator (not handed); random units annihilate nothing; sound low-degree (q<=2) annihilators of EVERY correct bit exist and survive the witness, while wrong bits get none at any q (soundness control passes); but witness-free splitter progress (min-damage > 0) is ordinary DPLL propagation, not the constant-fraction property | chart selection, not annihilator existence: certificates are abundant; choosing the witness-surviving one is itself witness-finding, and the Splitting Lemma's poly-depth claim is unestablished |
 
-Highlight for the text (Lemma + verified computation): localization is the
-first route that genuinely changes the proof system rather than the
-instance. The selector-core no-go dies because substituting s = 1 into
-t(1-s) = 1 yields -1 = 0: the hard branch is excised from the chart, not
-refuted; and the degree-3 collapse is machine-verified against a hidden
-core that plain Macaulay cannot crack below degree 5. The relocation
-pattern then becomes precise rather than rhetorical: localizers that work
-are partial witnesses (g = 1-s vanishes exactly where s = 1), random
-denominators over large fields are units on the whole cube (hence
-interpolatable, hence at most a factor-n degree saving), and unaided
-selection shows zero gain. Open refinement: the rank-gain objective for
-'proof scars' is non-discriminating (every localizer contributes the same
-block rank); the right objective is damage to the x-sector nullspace.
+**Lemma (localization kills zero-divisors).** Let I be the multilinear
+Boolean ideal of a formula and h an x-sector ambiguity. If g h in I (or, at
+finite degree, g h in M_D(I)) and g(x*) != 0 at the witness, then adjoining
+the inverse u g = 1 derives h = 0 in that chart. Proof: u g h - h = 0 and
+g h in I, so h in I + <u g - 1>. The selector-core obstruction to affine
+IDL is defeated because 1 - s annihilates the hard branch s (s(1-s) = 0)
+and localizing at 1 - s excises rather than refutes the branch
+(substituting s = 1 gives -1 = 0). Machine-verified: the degree-3 collapse
+holds against a hidden core that plain Macaulay cannot crack below degree 5.
+
+What the saturation probe then establishes, and what it does not. Solving
+the syzygy g h in M_D(I) DISCOVERS the working annihilator (1 - s is found,
+not handed) and confirms random localizers are units (formula-damage 0).
+More: sound low-degree annihilators of every correct coordinate bit exist
+and survive the witness, while wrong bits admit none at any tested degree
+(a clean soundness control). So the wall is NOT the absence of low-degree
+certificates: at these scales they are abundant, which refutes the naive
+"rational pseudorandomness = no low-degree zero-divisors" reading. The
+barrier is precisely CHART SELECTION: choosing the witness-surviving
+annihilator among many is itself witness-finding, and although a Boolean
+splitter can make formula progress on both branches (min-damage > 0), that
+is ordinary DPLL propagation and does NOT establish the Splitting Lemma's
+constant-fraction property, the death of the non-witness branch in
+O(log n), or polynomial tree size. The honest open frontier is therefore
+the splitting depth, not certificate existence. Scale caveat: the abundance
+is measured on heavily constrained n = 9 unique-SAT and may not persist
+asymptotically.
 
 Section thesis: every route relocates the hardness into a measurable object
 rather than removing it, exactly as NP != RP predicts; each probe is a
