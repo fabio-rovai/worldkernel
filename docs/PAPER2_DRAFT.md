@@ -102,6 +102,7 @@ Each attack aims at the NP = RP assumption itself; each probe is in
 | VV parity (isolate, then parity) | `vv_parity_probe.py` | max intermediate ANF width flat across bucket sizes 0/1/2/3+ (3211/3372/2952/2615) | parity pseudorandomness under isolation |
 | localized IDL (adjoin inverses) | `lidl_probe.py` | POSITIVE micro-result verified: one localizer t(1-s)=1 collapses the selector-core obstruction to degree 3 while plain Macaulay needs degree 5; but random localizers over F_p change nothing (r = 0/1/2/4 identical) and rank-greedy selection has no signal (uniform gains) | localizers that work are zero-divisor scars (annihilators), not charts; random charts are units |
 | saturating LIDL (solve for annihilators) | `saturation_lidl_probe.py` | the selector localizer 1-s is DISCOVERED as z_1's formula-driven annihilator (not handed); random units annihilate nothing; sound low-degree (q<=2) annihilators of EVERY correct bit exist and survive the witness, while wrong bits get none at any q (soundness control passes); but witness-free splitter progress (min-damage > 0) is ordinary DPLL propagation, not the constant-fraction property | chart selection, not annihilator existence: certificates are abundant; choosing the witness-surviving one is itself witness-finding, and the Splitting Lemma's poly-depth claim is unestablished |
+| common eigencharts (whole-assignment charts) | `eigenchart_lidl_probe.py` | the eigenvalue method (Stickelberger) on the truncated quotient: a common eigenchart g emits the entire assignment as eigenvalues, then verify. Selector core: g=1-s is a degree-1 global eigenchart, q=1 carries the whole witness at D=2 where q=0 needs D=5 (planted). Generic scaling sweep: the q=0 common-eigenchart degree GROWS with n (4.00->4.33->4.67) while the denominator saving stays ~0; soundness structural (radical ideal) | the common-eigenchart degree chi(F): low-degree local certificates do NOT glue into a lower-degree GLOBAL chart; chi grows with n and localization does not bend it |
 
 **Lemma (localization kills zero-divisors).** Let I be the multilinear
 Boolean ideal of a formula and h an x-sector ambiguity. If g h in I (or, at
@@ -130,6 +131,23 @@ O(log n), or polynomial tree size. The honest open frontier is therefore
 the splitting depth, not certificate existence. Scale caveat: the abundance
 is measured on heavily constrained n = 9 unique-SAT and may not persist
 asymptotically.
+
+The sixth route closes the chart-selection question in the negative. Instead
+of selecting per-bit charts, it asks for a single COMMON EIGENCHART g whose
+coordinate eigenvalues x_i g = b_i g spell out the whole assignment at once
+(the Stickelberger eigenvalue method on the truncated quotient), which would
+convert hard chart-survival into cheap candidate-verification. For radical
+Boolean ideals with a unique witness the global eigenchart exists abstractly
+(I is the maximal ideal at x*), so the only question is its degree chi(F).
+The selector core shows localization CAN collapse it (g = 1 - s carries the
+witness at D = 2 versus D = 5 for g = 1), but that structure is planted; the
+scaling sweep on generic instances shows the q = 0 eigenchart degree growing
+with n while the denominator saving stays ~0. So low-degree denominators do
+not glue the abundant local certificates into a lower-degree global chart:
+chi(F) is the binding invariant, it grows, and localization does not bend
+the growth. This is the sharpest form of the wall: the certificates exist
+and are abundant, selection is the obstruction, and the natural
+selection-free object (the global eigenchart) has degree growing with n.
 
 Section thesis: every route relocates the hardness into a measurable object
 rather than removing it, exactly as NP != RP predicts; each probe is a
