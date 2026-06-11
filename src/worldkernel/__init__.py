@@ -40,6 +40,12 @@ from .model import Verdict, WorldModel
 from .phases import PhaseQuotient, kmm_exact_marginal, kmm_quotient
 from .proofs import SumcheckProver, verify_z
 from .propose import evaluate as evaluate_assumption
+from .query_scar import (
+    ScarQuery,
+    kmm_marginal_via_scar,
+    local_query_via_scar,
+    shiraishi_mori_block,
+)
 from .tractable import ring_of_cliques, transfer_marginals, weitz_interval
 from .mediation import atom_count, nde_interval, random_reference, rung12_summary
 from .witness import (
@@ -103,5 +109,9 @@ __all__ = [
     "learn_constraints",
     "LearnedStructure",
     "sample_worlds",
+    "ScarQuery",
+    "kmm_marginal_via_scar",
+    "local_query_via_scar",
+    "shiraishi_mori_block",
     "__version__",
 ]
