@@ -35,6 +35,12 @@ from .estimate import (
     harmed_bounds_from_counts,
     pn_bounds_from_counts,
 )
+from .interaction import (
+    interaction_rank,
+    ring_clique_marginal,
+    ring_clique_pair,
+    treewidth_cost,
+)
 from .kernel import CouplingKernel, exact_interval, frechet_interval, psd_interval
 from .model import Verdict, WorldModel
 from .phases import PhaseQuotient, kmm_exact_marginal, kmm_quotient
@@ -137,5 +143,9 @@ __all__ = [
     "pairwise_coherence",
     "linear_query",
     "ratio_query",
+    "ring_clique_pair",
+    "ring_clique_marginal",
+    "interaction_rank",
+    "treewidth_cost",
     "__version__",
 ]
