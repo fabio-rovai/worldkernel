@@ -40,6 +40,13 @@ from .model import Verdict, WorldModel
 from .phases import PhaseQuotient, kmm_exact_marginal, kmm_quotient
 from .proofs import SumcheckProver, verify_z
 from .propose import evaluate as evaluate_assumption
+from .query_class import (
+    QueryVerdict,
+    coupling_rank,
+    necessity_from_couplings,
+    occupation_pattern_prob,
+    pairwise_offdiagonal,
+)
 from .query_scar import (
     ScarQuery,
     kmm_marginal_via_scar,
@@ -113,5 +120,10 @@ __all__ = [
     "kmm_marginal_via_scar",
     "local_query_via_scar",
     "shiraishi_mori_block",
+    "QueryVerdict",
+    "pairwise_offdiagonal",
+    "occupation_pattern_prob",
+    "coupling_rank",
+    "necessity_from_couplings",
     "__version__",
 ]

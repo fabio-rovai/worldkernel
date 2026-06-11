@@ -206,6 +206,42 @@ chain-trajectory rows. The empirical test and the close read agree: the
 selection core is sound; if the result is wrong, the error is in the
 surrounding probabilistic machinery, not the kernel-style selection.
 
+## 4b. The tractable query frontier (what the barrier program is FOR)
+
+The nine attack routes and the Farago read converge on one constructive
+statement, and it is the section that matters for the kernel. Worst-case
+Sly-Sun cannot be broken (that is NP=RP), but the kernel does not compute the
+partition function; it computes specific counterfactual QUERIES, and those
+are governed by a different, query-local invariant.
+
+**Definition (coupling rank).** A counterfactual query supported on a vertex
+set Q is a functional of the hard-core measure restricted to Q. Its coupling
+rank is the number of joint occupation patterns of Q the query distinguishes,
+at most 2^|Q|. It is the scar dimension of the query.
+
+**Theorem (tractable query class).** Every k-local counterfactual query
+(|Q| <= k) on a world of treewidth w is computable exactly in
+O(2^k * n * 2^{w+1}) time, independent of |C| (the partition function).
+For bounded k and bounded w this is polynomial, even above the Sly-Sun
+degree threshold where counting is hard.
+
+**Physical realization (Shiraishi-Mori scar).** The coupling rank is the
+dimension of a Shiraishi-Mori many-body scar: the query state is a gapped
+non-thermal eigenspace H = P A P + (I-P) B (I-P), [H,P]=0, read in
+poly(rank) time. Low coupling rank = small gapped scar = tractable query.
+
+This is the kernel's working regime, demonstrated above the threshold
+(`worldkernel.query_class`, `worldkernel.query_scar`, validated vs
+enumeration): single marginals (k=1, rank 2), the central PAIRWISE
+OFF-DIAGONAL P(Y_i, Y_j) (k=2, rank 4), nested three-world counterfactuals
+(k=3, rank 8), and downstream functionals (probability of necessity,
+fraction harmed) which inherit the locality of the off-diagonal they read.
+The flagship: K(200,200) has |C| ~ 3.2e60 admissible worlds (counting
+astronomically hard) yet its occupation query is rank 2, read exactly and
+instantly. The honest boundary: the full-counting query has coupling rank
+|C|, so this characterizes the tractable frontier rather than crossing it.
+Scarring is the solution for the queries, not for the worst case.
+
 ## 5. The architecture
 
 One object (`WorldModel`): structure + data + assumptions in, Verdicts out
