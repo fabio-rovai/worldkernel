@@ -40,6 +40,13 @@ from .model import Verdict, WorldModel
 from .phases import PhaseQuotient, kmm_exact_marginal, kmm_quotient
 from .proofs import SumcheckProver, verify_z
 from .propose import evaluate as evaluate_assumption
+from .query_algebra import (
+    AlgebraVerdict,
+    expected_occupancy,
+    linear_query,
+    pairwise_coherence,
+    ratio_query,
+)
 from .query_class import (
     QueryVerdict,
     coupling_rank,
@@ -125,5 +132,10 @@ __all__ = [
     "occupation_pattern_prob",
     "coupling_rank",
     "necessity_from_couplings",
+    "AlgebraVerdict",
+    "expected_occupancy",
+    "pairwise_coherence",
+    "linear_query",
+    "ratio_query",
     "__version__",
 ]

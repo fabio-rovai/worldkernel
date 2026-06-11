@@ -236,6 +236,24 @@ enumeration): single marginals (k=1, rank 2), the central PAIRWISE
 OFF-DIAGONAL P(Y_i, Y_j) (k=2, rank 4), nested three-world counterfactuals
 (k=3, rank 8), and downstream functionals (probability of necessity,
 fraction harmed) which inherit the locality of the off-diagonal they read.
+
+**Widening to global functionals (the closure algebra).** Coupling rank is
+governed by query STRUCTURE, not support size, so global queries that
+touch every vertex stay tractable when they decompose into poly-many local
+pieces. The tractable query class is closed under (i) poly-size linear
+combination, (ii) ratios, and (iii) bounded-order products
+(`worldkernel.query_algebra`). Hence the aggregate pairwise coherence
+Q = sum_{i<j} P(Y_i, Y_j), expected occupancy E[sum_i Y_i], average causal
+effects, probabilities of necessity and sufficiency, fractions harmed, and
+natural (in)direct effects, all of which touch all n vertices, are exact in
+O(n^k * poly(width)) time, independent of |C|. Demonstrated and validated
+vs enumeration on degree-6 and degree-7 worlds above the threshold, with
+the global coherence cross-checked against the kernel's own
+CouplingKernel.pairwise_coherence on the exact moment matrix: where
+structure is absent the kernel returns the PSD / Frechet bounds on Q, and
+on a bounded-width world it returns the exact value, above the threshold.
+The partition function alone has rank |C| and stays outside the algebra:
+the closure characterizes the tractable frontier without crossing it.
 The flagship: K(200,200) has |C| ~ 3.2e60 admissible worlds (counting
 astronomically hard) yet its occupation query is rank 2, read exactly and
 instantly. The honest boundary: the full-counting query has coupling rank
