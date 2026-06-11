@@ -155,6 +155,33 @@ standing falsification target. The localized route sharpens this from
 slogan to mechanism: the wall is not that charts do not help, it is that
 helpful charts are made of witness bits.
 
+### An external attack, empirically examined: Farago's sampling route
+
+Farago (arXiv:2312.11838) claims a polynomial almost-uniform sampler for
+independent sets, hence an FPRAS, hence NP = RP, striking the same Sly-Sun
+assumption from the sampling side. We examined it empirically
+(`experiments/farago_falsifier.py`). The engine is one round operation per
+edge: convert n uniform samples of I(G_k) into n uniform samples of
+I(G_{k+1}) by filling an n x n matrix, taking a uniform random
+H-perfect-matching with H = I(G_{k+1}), and reading the value vector, which
+the Independence Property (Theorem 1) claims is product-uniform on H. We
+tested the round engine with EXACT uniform inputs and an EXACT uniform H-PM
+(sampled by permanent ratios, removing the JSV approximation), so the test
+isolates the pure selection logic. Result: the engine output matches uniform
+on I(G_{k+1}) to the sampling-noise floor (TV 0.0044 vs 0.0055), and the
+per-round error amplification is exactly 1/rho as the restriction operator
+mu -> mu|_H predicts. The Independence Property is genuinely correct: the
+easy refutation (biased matching selection) is false. This is not an
+endorsement of NP = RP; it localizes the flaw. Every step testable at
+enumerable scale checks out, so the error must lie in the multi-round
+JOINT-distribution behavior under an APPROXIMATE matching, where the n
+outputs are only near-independent and those weak dependencies can compound
+across the m rounds, the part the separation-distance argument of the
+paper's Appendix B must control and the part no enumerable-scale experiment
+can reach. This fits the section's thesis from the outside: the same wall,
+approached by sampling, relocates its hardness into the one place the
+construction's own error analysis must defend.
+
 ## 5. The architecture
 
 One object (`WorldModel`): structure + data + assumptions in, Verdicts out
