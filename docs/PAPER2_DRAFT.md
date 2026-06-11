@@ -183,6 +183,29 @@ can reach. This fits the section's thesis from the outside: the same wall,
 approached by sampling, relocates its hardness into the one place the
 construction's own error analysis must defend.
 
+Close read of the error analysis (Sections 7, Appendices A-B). A concrete
+error sits in equation (20): the separation-distance-from-total-variation
+conversion (the paper's Lemma 1(vi), s(D,U) <= 2|support|*d_TV, proved
+correctly in Appendix A for a generic support) is applied with the WRONG
+support. There D and U are distributions over PERFECT MATCHINGS of the
+n x n matrix (n = 2N^2), whose count is up to n! = (2N^2)!, yet eq (20)
+substitutes |S| <= 2^N, the size of the independent-set value domain, a
+super-exponentially smaller and different set. This is exactly the flawed
+separation-distance composition inequality the wall thesis predicts the
+construction must hide. It is, however, patchable: log(n!) = O(N^2 log N)
+is polynomial, so setting delta ~ 2^{-Rm}/n! restores s(D,U) <= 2^{-Rm}
+for every matrix while keeping log(1/delta) and hence the JSV running time
+polynomial. So the bug is real but not, by itself, fatal. With the
+Independence Property verified correct (above) and the Section-7 mixture
+composition repairable, the only places a fatal error can remain are the
+two not checkable from the released analysis: the BIDC chain's exact
+stationarity (Section 4.2), on which Theorem 1's anchoring hypotheses
+rest, and the p-robust matching-existence proof of Appendix B (Lemma 4,
+p = 2/N, claimed failure probability e^{-N}) under the dependent
+chain-trajectory rows. The empirical test and the close read agree: the
+selection core is sound; if the result is wrong, the error is in the
+surrounding probabilistic machinery, not the kernel-style selection.
+
 ## 5. The architecture
 
 One object (`WorldModel`): structure + data + assumptions in, Verdicts out
