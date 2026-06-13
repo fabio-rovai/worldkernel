@@ -313,7 +313,12 @@ STAR, UCI Bank Marketing (PN floor 0.80 with both point estimates at the
 floor). Platform test: identical training data, rung-3 truths 1.000 vs
 0.298 (stable-worldmodel TwoRoom). Frontier audit (Claude, live): harness
 tax (PN coverage 12% to 88% when intervals permitted) and computation gap
-(NDE 0% coverage, 100% overclaim, both conditions).
+(NDE 0% coverage, 100% overclaim, both conditions). Multi-model extension
+(docs/KAGGLE_BENCHMARK_NOTE.md): the arena is now a published Kaggle
+Community Benchmark scored across six frontier models; none is calibrated
+(overclaim 0.44-0.67) and the strongest flagship (Claude Opus 4.8) is the
+most overconfident, worst by 3-4x on the sign-undetermined mediation class,
+confirming the computation gap is not model-specific.
 
 ## 7. Related work
 
@@ -349,3 +354,4 @@ the positive-axis zero pinching beyond enumerable sizes; Lasserre-2.
 | 12 | coverage-guaranteed estimation | (module) | test_estimate.py | simulated coverage >= nominal |
 | 13 | ontology width tracks branching | ontology_width.py | test_width.py | 1,110 classes, 1.3 s |
 | 14 | bank marketing PN floor | public_trials.py | (merged branch) | PN in [0.80, 1.00] |
+| 15 | multi-model arena: flagship least calibrated | kaggle_arena_full.py | (Kaggle live, published) | 6 models, none calibrated, Opus 4.8 worst 3-4x (0.193) |
