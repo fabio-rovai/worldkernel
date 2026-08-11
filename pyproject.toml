@@ -34,8 +34,8 @@ Issues = "https://github.com/fabio-rovai/worldkernel/issues"
 [project.optional-dependencies]
 sdp = ["cvxpy>=1.4"]
 plots = ["matplotlib>=3.7"]
-mcp = ["mcp>=1.2"]
-dev = ["pytest>=7.0", "cvxpy>=1.4", "mcp>=1.2"]
+mcp = ["mcp>=1.2,<2"]
+dev = ["pytest>=7.0", "cvxpy>=1.4", "mcp>=1.2,<2"]
 
 [project.scripts]
 worldkernel-mcp = "worldkernel.mcp_server:main"
