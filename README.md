@@ -5,6 +5,7 @@
 [![CI](https://github.com/fabio-rovai/worldkernel/actions/workflows/ci.yml/badge.svg)](https://github.com/fabio-rovai/worldkernel/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](pyproject.toml)
+[![Sponsor](https://img.shields.io/github/sponsors/fabio-rovai?label=Sponsor&logo=GitHub%20Sponsors&logoColor=EA4AAA&color=EA4AAA)](https://github.com/sponsors/fabio-rovai)
 
 This repository builds, in public, the reference implementation of the framework in the paper [*WorldKernel: A World Model is the Coupling Kernel of Admissible Possible Worlds*](https://arxiv.org/abs/2606.10934) (Fabio Rovai, arXiv:2606.10934). Everything in this repo beyond the paper's results (the escape hatches, the four barrier-attack probes, the arena, the frontier audits, the WorldModel architecture, continuous outcomes) is material for the follow-up paper, developed here in public first.
 
@@ -255,3 +256,9 @@ For the software itself, cite the repository: https://github.com/fabio-rovai/wor
 ## License
 
 MIT
+
+---
+
+## Sponsor
+
+If this work is useful to you, you can support its continued development through [GitHub Sponsors](https://github.com/sponsors/fabio-rovai).
